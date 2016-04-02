@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Treacherous Knockout Example</title>
+    <link href="default-theme.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+        label
+        {
+            display: inline-block;
+            width: 10em;
+        }
+
+        input
+        {
+            padding: 0.25em;
+        }
+
+        section>div
+        {
+            margin: 0.25em;
+        }
+    </style>
+</head>
+<body>
+    <h2>Validate with nested objects and iterated elements</h2>
+    <section data-bind="validateWith: validationGroup">
+        <div>
+            <label>Some Number</label>
+            <input data-bind="value: someNumber"/>
+        </div>
+        <div>
+            <label>Some Text</label>
+            <input data-bind="value: someText"/>
+        </div>
+        <div>
+            <label>Some Nested Number</label>
+            <input data-bind="value: someNestedObject.someNumber"/>
+        </div>
+        <!-- ko foreach: someArray -->
+        <div>
+            <label data-bind="text: 'Some Array - Index '+ ($index() + 1)"></label>
+            <input data-bind="textInput: $rawData"/>
+        </div>
+        <!-- /ko -->
+    </section>
+
+    <h2>Manually validate properties</h2>
+    <section>
+        <div>
+            <p>someArray Property Error</p>
+            <div data-bind="validateProperty: 'someArray'"></div>
+        </div>
+        <div>
+            <p>someArray[1] Error</p>
+            <div data-bind="validateProperty: 'someArray[1]'"></div>
+        </div>
+    </section>
+
+    <h2>A validation summary</h2>
+    <section>
+        <div data-bind="validationSummary: validationGroup"></div>
+    </section>
+
+    <h2>No auto inline validation, just manual</h2>
+    <section data-bind="validateWith: { group: validationGroup, options: { inlineValidation: false } }">
+        <div>
+            <label>Some Number</label>
+            <input data-bind="value: someNumber"/>
+        </div>
+        <div>
+            <label>Some Text</label>
+            <input data-bind="value: someText"/>
+        </div>
+        <div>
+            <label>Some Nested Number (this will show inline errors)</label>
+            <input data-bind="value: someNestedObject.someNumber"/>
+            <div data-bind="validateProperty: 'someNestedObject.someNumber'"></div>
+        </div>
+        <!-- ko foreach: someArray -->
+        <div>
+            <label data-bind="text: 'Some Array - Index '+ ($index() + 1)"></label>
+            <input data-bind="textInput: $rawData"/>
+        </div>
+        <!-- /ko -->
+    </section>
+
+
+    <script type="text/javascript" src="libs/bluebird.js"></script>
+    <script type="text/javascript" src="libs/knockout.js"></script>
+    <script type="text/javascript" src="libs/property-resolver.js"></script>
+    <script type="text/javascript" src="libs/eventjs.js"></script>
+
+    <script type="text/javascript" src="libs/treacherous.browser.js"></script>
+    <script type="text/javascript" src="../dist/treacherous-knockout.browser.js"></script>
+
+    <script type="text/javascript">
+        var someKoModel = {
+            someNumber: ko.observable(10),
+            someText: ko.observable("hello"),
+            someNestedObject: {
+              someNumber: ko.observable(200)
+            },
+            someArray: ko.observableArray([
+                ko.observable(10), ko.observable(15), ko.observable(30)
+            ])
+        };
+
+        var nestedRuleset = Treacherous.createRuleset()
+                .forProperty("someNumber")
+                    .addRule("maxValue", 100)
+                .build();
+
+        var ruleset = Treacherous.createRuleset()
+                .forProperty("someNumber")
+                    .addRule("maxValue", 20)
+                .forProperty("someText")
+                    .addRule("required")
+                    .addRule("minLength", 3)
+                .forProperty("someNestedObject")
+                    .addRuleset(nestedRuleset)
+                .forProperty("someArray")
+                    .addRule("maxLength", 2)
+                    .addRuleForEach("maxValue", 20)
+                .build();
+
+        var validationGroup = Treacherous.create(someKoModel, ruleset);
+
+        ko.applyBindings(someKoModel);
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+input.valid {
+    border: 1px solid green;
+    background-color: rgba(0,255,0,0.1);
+}
+
+input.invalid {
+    border: 1px solid red;
+    background-color: rgba(255,0,0,0.1);
+}
+
+.validation-error-container {
+    color: red;
+    padding: 0.5em;
+}
+
+.validation-summary-container {
+    color: red;
+    border: 1px solid red;
+    padding: 1em;
+}
