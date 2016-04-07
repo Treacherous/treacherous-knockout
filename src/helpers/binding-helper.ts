@@ -1,4 +1,4 @@
-import {PropertyValidationChangedEvent, IValidationGroup} from "treacherous";
+import {PropertyStateChangedEvent, IValidationGroup} from "treacherous";
 
 export class BindingHelper
 {
@@ -43,11 +43,11 @@ export class BindingHelper
     }
 
     public static setupValidationListener(validationGroup: IValidationGroup, propertyPath: string, element: HTMLElement, customHandler = null) {
-        var predicate = (x: PropertyValidationChangedEvent) => { return x.property == propertyPath; };
+        var predicate = (x: PropertyStateChangedEvent) => { return x.property == propertyPath; };
         var handler;
 
         if(!customHandler) {
-            handler = (args: PropertyValidationChangedEvent) => {
+            handler = (args: PropertyStateChangedEvent) => {
                 this.handleElementError(element, args.isValid, args.error);
             };
         }

@@ -24,7 +24,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
@@ -51,7 +51,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo.bar");
@@ -84,7 +84,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[1].bar");
@@ -109,7 +109,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[2]");
@@ -133,7 +133,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 console.log(errors);
                 expect(errors).not.to.be.null;
@@ -171,7 +171,7 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
-            validationGroup.getErrors()
+            validationGroup.getModelErrors()
                 .then(function(errors){
                     console.log(errors);
                     expect(errors).not.to.be.null;
@@ -198,7 +198,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.property).to.equal("foo");
@@ -236,7 +236,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("27");
             expect(args.property).to.equal("foo.bar");
@@ -265,7 +265,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             expect(args.error).contains("15");
             expect(args.error).contains("20");
@@ -297,7 +297,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.propertyChangedEvent.subscribe(function(args){
+        validationGroup.propertyStateChangedEvent.subscribe(function(args){
             console.log("triggered", args);
             expect(args.isValid).to.be.false;
             expect(args.error).contains("3");
@@ -322,7 +322,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.validationStateChangedEvent.subscribe(function(args){
+        validationGroup.modelStateChangedEvent.subscribe(function(args){
             expect(args.isValid).to.be.false;
             validationGroup.release();
             done();
@@ -349,7 +349,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors().then(function(errors){
+        validationGroup.getModelErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
@@ -371,7 +371,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors().then(function(errors){
+        validationGroup.getModelErrors().then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
@@ -406,7 +406,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getErrors()
+        validationGroup.getModelErrors()
             .then(function(errors){
                 expect(errors).to.be.empty;
                 validationGroup.release();
@@ -478,14 +478,14 @@ describe('Validation Group', function () {
             var validationGroup = createValidationGroupFor(dummyModel, ruleset);
 
             // This starts the initial validation chain so delays it
-            var promise1 = validationGroup.getErrors()
+            var promise1 = validationGroup.getModelErrors()
                 .then(function(errors){
                     expect(errors).to.be.empty;
                 });
 
             dummyModel.foo = 10;
 
-            var promise2 = validationGroup.getErrors()
+            var promise2 = validationGroup.getModelErrors()
                 .then(function(errors){
                     expect(errors).to.be.empty;
                 });

@@ -1,11 +1,11 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "dependencies": {
-    "treacherous": "^0.4.0",
+    "treacherous": "^0.5.0",
     "knockout": "^3.4.0",
-    "property-resolver": "grofit/property-resolver",
-    "eventjs": "grofit/eventjs"
+    "property-resolver": "^0.0.6",
+    "event-js": "^0.1.0"
   },
   "bugs": {
     "url": "https://github.com/grofit/treacherous-knockout/issues"
@@ -23,7 +23,7 @@
   "devDependencies": {
     "gulp": "3.9.0",
     "gulp-typescript": "2.10.0",
-    "gulp-es6-exporter": "grofit/gulp-es6-exporter",
+    "gulp-es6-exporter": "^0.0.5",
     "gulp-uglify": "latest",
     "gulp-rename": "latest",
     "webpack-stream": "^3.1.0",

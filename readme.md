@@ -135,3 +135,9 @@ entry with your instance.
 A good example of this would be if you wanted to use qtip2 (other tooltip libraries are available) as your
 inline validation system, which would make tooltips to show validation errors rather than the default inline
 ones.
+
+## Developing
+
+If you want to add to the development clone and do the normal `npm install` and `gulp` then if you want to 
+run tests do `gulp run-tests` which will run all the built in tests, there are no acceptance tests to date
+so you will need to manually run the example and confirm it exists, may add some cucumber tests at a later date.
