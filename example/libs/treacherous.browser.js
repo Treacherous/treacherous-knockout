@@ -54,28 +54,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* This is an auto-generated file by gulp-es6-exporter */
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	__export(__webpack_require__(1));
 	__export(__webpack_require__(36));
 	__export(__webpack_require__(3));
-	__export(__webpack_require__(7));
 	__export(__webpack_require__(8));
+	__export(__webpack_require__(35));
+	__export(__webpack_require__(7));
 	__export(__webpack_require__(2));
 	__export(__webpack_require__(18));
 	__export(__webpack_require__(10));
-	__export(__webpack_require__(11));
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(37));
-	__export(__webpack_require__(38));
 	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(19));
-	__export(__webpack_require__(39));
+	__export(__webpack_require__(37));
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
@@ -86,16 +82,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(27));
 	__export(__webpack_require__(13));
 	__export(__webpack_require__(28));
-	__export(__webpack_require__(40));
-	__export(__webpack_require__(33));
-	__export(__webpack_require__(35));
-	__export(__webpack_require__(34));
+	__export(__webpack_require__(11));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(38));
+	__export(__webpack_require__(39));
 	__export(__webpack_require__(32));
-	__export(__webpack_require__(41));
+	__export(__webpack_require__(40));
 	__export(__webpack_require__(31));
 	__export(__webpack_require__(9));
 	__export(__webpack_require__(29));
 	__export(__webpack_require__(30));
+	__export(__webpack_require__(41));
+	__export(__webpack_require__(33));
+	__export(__webpack_require__(34));
 
 
 /***/ },
@@ -123,8 +122,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var model_watcher_1 = __webpack_require__(33);
 	var property_resolver_1 = __webpack_require__(5);
 	var rule_resolver_1 = __webpack_require__(9);
-	//import {RuleResolver2} from "./rulesets/rule-resolver2";
-	//export {RuleResolver2 as RuleResolver} from "./rulesets/rule-resolver2";
 	exports.ruleRegistry = new rule_registry_1.RuleRegistry();
 	exports.ruleRegistry.registerRule(new date_validation_rule_1.DateValidationRule());
 	exports.ruleRegistry.registerRule(new decimal_validation_rule_1.DecimalValidationRule());
@@ -149,15 +146,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new ruleset_builder_1.RulesetBuilder().create();
 	}
 	exports.createRuleset = createRuleset;
-	function createWithRules(model, rulesCreator) {
+	function createGroupWithRules(model, rulesCreator) {
 	    var ruleset = rulesCreator(new ruleset_builder_1.RulesetBuilder());
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.createWithRules = createWithRules;
-	function create(model, ruleset) {
+	exports.createGroupWithRules = createGroupWithRules;
+	function createGroup(model, ruleset) {
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.create = create;
+	exports.createGroup = createGroup;
 
 
 /***/ },
@@ -187,9 +184,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Promise = __webpack_require__(4);
 	var property_resolver_1 = __webpack_require__(5);
-	var eventjs_1 = __webpack_require__(6);
-	var property_validation_changed_event_1 = __webpack_require__(7);
-	var validation_state_changed_event_1 = __webpack_require__(8);
+	var event_js_1 = __webpack_require__(6);
+	var property_state_changed_event_1 = __webpack_require__(7);
+	var model_state_changed_event_1 = __webpack_require__(8);
 	var rule_resolver_1 = __webpack_require__(9);
 	var type_helper_1 = __webpack_require__(10);
 	// TODO: This class is WAY to long, needs refactoring
@@ -207,7 +204,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.model = model;
 	        this.refreshRate = refreshRate;
 	        this.propertyErrors = {};
-	        this.activeValidators = 0;
 	        this.onModelChanged = function (eventArgs) {
 	            _this.validateProperty(eventArgs.propertyPath);
 	        };
@@ -217,10 +213,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (!possibleError) {
 	                    if (_this.propertyErrors[propertyName]) {
 	                        delete _this.propertyErrors[propertyName];
-	                        var eventArgs = new property_validation_changed_event_1.PropertyValidationChangedEvent(propertyName, true);
+	                        var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, true);
 	                        _this.propertyStateChangedEvent.publish(eventArgs);
 	                        if (hadErrors) {
-	                            _this.modelStateChangedEvent.publish(new validation_state_changed_event_1.ValidationStateChangedEvent(true));
+	                            _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(true));
 	                        }
 	                    }
 	                    return;
@@ -228,14 +224,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var previousError = _this.propertyErrors[propertyName];
 	                _this.propertyErrors[propertyName] = possibleError;
 	                if (possibleError != previousError) {
-	                    var eventArgs = new property_validation_changed_event_1.PropertyValidationChangedEvent(propertyName, false, possibleError);
+	                    var eventArgs = new property_state_changed_event_1.PropertyStateChangedEvent(propertyName, false, possibleError);
 	                    _this.propertyStateChangedEvent.publish(eventArgs);
 	                    if (!hadErrors) {
-	                        _this.modelStateChangedEvent.publish(new validation_state_changed_event_1.ValidationStateChangedEvent(false));
+	                        _this.modelStateChangedEvent.publish(new model_state_changed_event_1.ModelStateChangedEvent(false));
 	                    }
 	                }
 	            };
-	            _this.activeValidators++;
 	            if (_this.activePromiseChain) {
 	                _this.activePromiseChain = Promise.resolve(_this.activePromiseChain)
 	                    .then(function () {
@@ -243,15 +238,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return _this.fieldErrorProcessor
 	                        .checkFieldForErrors(fieldValue, propertyRules)
 	                        .then(handlePossibleError);
-	                })
-	                    .tap(function () { _this.activeValidators--; });
+	                });
 	            }
 	            else {
 	                var fieldValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
 	                _this.activePromiseChain = _this.fieldErrorProcessor
 	                    .checkFieldForErrors(fieldValue, propertyRules)
-	                    .then(handlePossibleError)
-	                    .tap(function () { _this.activeValidators--; });
+	                    .then(handlePossibleError);
 	            }
 	        };
 	        this.validatePropertyWithRuleSet = function (propertyName, ruleset) {
@@ -337,15 +330,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.waitForValidatorsToFinish = function () {
 	            return new Promise(function (resolve, reject) {
 	                var interval = setInterval(function () {
-	                    if (_this.activeValidators == 0) {
+	                    if (_this.activePromiseChain.isFulfilled()) {
 	                        clearInterval(interval);
 	                        resolve();
 	                    }
 	                }, 50);
 	            });
 	        };
-	        this.propertyStateChangedEvent = new eventjs_1.EventHandler(this);
-	        this.modelStateChangedEvent = new eventjs_1.EventHandler(this);
+	        this.propertyStateChangedEvent = new event_js_1.EventHandler(this);
+	        this.modelStateChangedEvent = new event_js_1.EventHandler(this);
 	        this.modelWatcher.setupWatcher(model, ruleset, refreshRate);
 	        this.modelWatcher.onPropertyChanged.subscribe(this.onModelChanged);
 	        this.validateModel();
@@ -383,28 +376,28 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ function(module, exports) {
 
-	var PropertyValidationChangedEvent = (function () {
-	    function PropertyValidationChangedEvent(property, isValid, error) {
+	var PropertyStateChangedEvent = (function () {
+	    function PropertyStateChangedEvent(property, isValid, error) {
 	        this.property = property;
 	        this.isValid = isValid;
 	        this.error = error;
 	    }
-	    return PropertyValidationChangedEvent;
+	    return PropertyStateChangedEvent;
 	})();
-	exports.PropertyValidationChangedEvent = PropertyValidationChangedEvent;
+	exports.PropertyStateChangedEvent = PropertyStateChangedEvent;
 
 
 /***/ },
 /* 8 */
 /***/ function(module, exports) {
 
-	var ValidationStateChangedEvent = (function () {
-	    function ValidationStateChangedEvent(isValid) {
+	var ModelStateChangedEvent = (function () {
+	    function ModelStateChangedEvent(isValid) {
 	        this.isValid = isValid;
 	    }
-	    return ValidationStateChangedEvent;
+	    return ModelStateChangedEvent;
 	})();
-	exports.ValidationStateChangedEvent = ValidationStateChangedEvent;
+	exports.ModelStateChangedEvent = ModelStateChangedEvent;
 
 
 /***/ },
@@ -1126,7 +1119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var property_resolver_1 = __webpack_require__(5);
-	var eventjs_1 = __webpack_require__(6);
+	var event_js_1 = __webpack_require__(6);
 	var type_helper_1 = __webpack_require__(10);
 	var property_watcher_1 = __webpack_require__(34);
 	var property_changed_event_1 = __webpack_require__(35);
@@ -1242,7 +1235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                setTimeout(_this.updateAndNotifyDifferences, 1);
 	            }
 	        };
-	        this.onPropertyChanged = new eventjs_1.EventHandler(this);
+	        this.onPropertyChanged = new event_js_1.EventHandler(this);
 	    }
 	    return ModelWatcher;
 	})();
@@ -1296,6 +1289,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 38 */
 /***/ function(module, exports) {
 
+	
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
 	var ValidationError = (function () {
 	    function ValidationError(propertyName, message) {
 	        this.propertyName = propertyName;
@@ -1304,13 +1304,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return ValidationError;
 	})();
 	exports.ValidationError = ValidationError;
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	
 
 
 /***/ },

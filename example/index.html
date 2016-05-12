@@ -124,7 +124,7 @@
                     .addRuleForEach("maxValue", 20)
                 .build();
 
-        var validationGroup = Treacherous.create(someKoModel, ruleset);
+        var validationGroup = Treacherous.createGroup(someKoModel, ruleset);
 
         ko.applyBindings(someKoModel);
     </script>

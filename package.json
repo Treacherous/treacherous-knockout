@@ -1,6 +1,6 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "dependencies": {
     "treacherous": "^0.6.0",
     "knockout": "^3.4.0",

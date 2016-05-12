@@ -102,15 +102,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return new treacherous_1.RulesetBuilder().create();
 	}
 	exports.createRuleset = createRuleset;
-	function createWithRules(model, rulesCreator) {
+	function createGroupWithRules(model, rulesCreator) {
 	    var ruleset = rulesCreator(new treacherous_1.RulesetBuilder());
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.createWithRules = createWithRules;
-	function create(model, ruleset) {
+	exports.createGroupWithRules = createGroupWithRules;
+	function createGroup(model, ruleset) {
 	    return validationGroupFactory.createValidationGroup(model, ruleset);
 	}
-	exports.create = create;
+	exports.createGroup = createGroup;
 	ko["validation"] = {
 	    validator: new inline_validator_1.InlineValidatior(),
 	    validationSummary: new simple_validation_summary_1.SimpleValidationSummary()
