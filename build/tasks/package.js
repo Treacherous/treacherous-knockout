@@ -30,7 +30,7 @@ gulp.task('package:minimal', ["compile"], function () {
     var webpackConfig = {
         output: {
             entry: "index.js",
-            filename: "treacherous-knockout.minimal.js",
+            filename: "treacherous-knockout.js",
             library: "Treacherous",
             libraryTarget: "umd"
         },

@@ -1,8 +1,8 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
-    "treacherous": "^0.5.0",
+    "treacherous": "^0.6.0",
     "knockout": "^3.4.0",
     "property-resolver": "^0.0.6",
     "event-js": "^0.1.0"
@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/grofit/treacherous-knockout/issues"
   },
-  "main": "dist/treacherous-knockout.minimal.js",
+  "main": "dist/treacherous-knockout.js",
   "keywords": [
     "validation",
     "knockout",

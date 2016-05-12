@@ -14,15 +14,15 @@ Just do an `npm install treacherous-knockout`
 
 There are 3 flavours in the dist dir:
 
+* `treacherous-knockout.js`         - Contains only treacherous-knockout and no dependencies for use with module loaders
 * `treacherous-knockout.all.js`     - Contains treacherous + treacherous-knockout and all dependencies (including bluebird, knockout, etc)
 * `treacherous-knockout.browser.js` - Contains treacherous-knockout which works without modules for browser usage
-* `treacherous-knockout.minimal.js` - Contains only treacherous-knockout and no dependencies for use with module loaders
 
 The reason there are 3 flavours is because some people will use this in a non-module aware
 browser scenario, and `treacherous.all.js` will contain everything for it to just work, it is also
 used by the unit tests in the project.
 
-`treacherous-knockout.minimal.js` is purely just the treacherous-knockout library without any dependencies, 
+`treacherous-knockout.js` is purely just the treacherous-knockout library without any dependencies, 
 this is the most modular version of the package and what the `package.json` defaults to. So all dependencies
 will need to be resolved via the module loader.
 
