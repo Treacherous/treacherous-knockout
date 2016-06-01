@@ -1,5 +1,7 @@
 # Treacherous-Knockout
 
+[![Join the chat at https://gitter.im/grofit/treacherous](https://badges.gitter.im/grofit/treacherous.svg)](https://gitter.im/grofit/treacherous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Treacherous plugin for knockout which allows treacherous validation to hook into the view.
 
 (See more about Treacherous [HERE](https://github.com/grofit/treacherous))
