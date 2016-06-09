@@ -156,6 +156,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.scanProperties();
 	            _this.startWatching();
 	        };
+	        this.changeWatcherTarget = function (model) {
+	            _this.model = model;
+	            _this.scanProperties();
+	        };
 	        this.startWatching = function () {
 	            _this.stopWatching();
 	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
@@ -167,6 +171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.updateAndNotifyDifferences = function () {
 	            var previousKeyCache = _this.watchCacheKeys;
+	            var previousWatchCache = _this.watchCache;
 	            _this.watchCache = [];
 	            _this.watchCacheKeys = [];
 	            _this.cacheWatchTargets("", _this.ruleset);
@@ -175,6 +180,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var previousValue = _this.watchCache[index].previousValue;
 	                    var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(key, previousValue, null);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                }
+	                else if (previousWatchCache[index].previousValue && previousWatchCache[index].previousValue.isArray) {
+	                    if (previousWatchCache[index].previousValue.length != _this.watchCache[index].previousValue.length) {
+	                        var newValue = _this.watchCache[index].previousValue;
+	                        var previousValue = previousWatchCache[index].previousValue;
+	                        var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(key, newValue, previousValue);
+	                        setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                    }
 	                }
 	            });
 	        };
@@ -187,28 +200,60 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.cacheWatchTargets = function (propertyStack, ruleset) {
 	            var paramRoute, parameterRules;
+	            var anyRulesAreForEach, anyRulesAreSets;
+	            var hasValue, currentValue;
 	            for (var param in ruleset.rules) {
 	                paramRoute = propertyStack ? propertyStack + "." + param : param;
 	                parameterRules = ruleset.rules[param];
+	                anyRulesAreForEach = false;
+	                anyRulesAreSets = false;
 	                parameterRules.forEach(function (rule) {
+	                    if (rule.isForEach) {
+	                        anyRulesAreForEach = true;
+	                    }
+	                    if (rule.getRulesForProperty) {
+	                        anyRulesAreSets = true;
+	                    }
+	                });
+	                hasValue = false;
+	                try {
 	                    var possibleValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
-	                    var currentValue = ko.unwrap(possibleValue);
-	                    var isArray = treacherous_1.TypeHelper.isArrayType(ko.unwrap(currentValue));
+	                    currentValue = ko.unwrap(possibleValue);
+	                    hasValue = true;
+	                }
+	                catch (ex) { }
+	                if (currentValue == null && (anyRulesAreForEach || anyRulesAreSets)) {
+	                    if (anyRulesAreForEach) {
+	                        currentValue = [];
+	                    }
+	                    else if (anyRulesAreSets) {
+	                        currentValue = {};
+	                    }
+	                    else {
+	                        currentValue = null;
+	                    }
+	                }
+	                parameterRules.forEach(function (rule) {
+	                    var isArray = treacherous_1.TypeHelper.isArrayType(currentValue);
 	                    if (isArray) {
-	                        var cachedArrayInfo = { length: ko.unwrap(currentValue).length, isArray: true };
+	                        var cachedArrayInfo = { length: currentValue.length, isArray: true };
 	                        _this.watchProperty(paramRoute, cachedArrayInfo);
 	                    }
-	                    if (rule.isForEach) {
+	                    if (rule.isForEach && hasValue) {
 	                        // ruleset
 	                        if (rule.internalRule.getRulesForProperty) {
-	                            ko.unwrap(_this.model[param]).forEach(function (element, index) {
-	                                _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
-	                            });
+	                            if (_this.model[param]) {
+	                                ko.unwrap(_this.model[param]).forEach(function (element, index) {
+	                                    _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
+	                                });
+	                            }
 	                        }
 	                        else {
-	                            ko.unwrap(_this.model[param]).forEach(function (element, index) {
-	                                _this.watchProperty(paramRoute + "[" + index + "]", ko.unwrap(_this.model[param])[index]);
-	                            });
+	                            if (_this.model[param]) {
+	                                ko.unwrap(_this.model[param]).forEach(function (element, index) {
+	                                    _this.watchProperty(paramRoute + "[" + index + "]", ko.unwrap(_this.model[param])[index]);
+	                                });
+	                            }
 	                        }
 	                    }
 	                    else {
@@ -234,17 +279,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            var refreshOnNextCycle = false;
 	            _this.watchCache.forEach(function (propertyWatcher) {
-	                var possibleValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
-	                var currentValue = ko.unwrap(possibleValue);
-	                if (currentValue && propertyWatcher.previousValue.isArray) {
-	                    if (currentValue.length != propertyWatcher.previousValue.length) {
-	                        refreshOnNextCycle = true;
+	                var currentValue;
+	                var hasChanged = false;
+	                try {
+	                    var possibleValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
+	                    currentValue = ko.unwrap(possibleValue);
+	                }
+	                catch (ex) { }
+	                if (typeof (currentValue) == "undefined") {
+	                    currentValue = propertyWatcher.previousValue;
+	                }
+	                if (propertyWatcher.previousValue && propertyWatcher.previousValue.isArray) {
+	                    var currentLength = currentValue.length || 0;
+	                    if (currentLength != propertyWatcher.previousValue.length) {
+	                        hasChanged = true;
 	                    }
 	                }
 	                else if (currentValue !== propertyWatcher.previousValue) {
 	                    var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
 	                    propertyWatcher.previousValue = currentValue;
+	                }
+	                if (hasChanged) {
+	                    refreshOnNextCycle = true;
 	                }
 	            });
 	            if (refreshOnNextCycle) {

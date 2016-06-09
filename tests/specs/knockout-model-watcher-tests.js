@@ -88,7 +88,7 @@ describe('Knockout Model Watcher', function () {
 
         var modelWatcher = new Treacherous.KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -99,7 +99,7 @@ describe('Knockout Model Watcher', function () {
         console.log("watcher after", modelWatcher.watchCache);
 
         setTimeout(function(){
-            expect(spySubscription).to.have.been.called.once;
+            expect(spySubscription).to.have.been.called.exactly(2);
             modelWatcher.stopWatching();
             done();
         }, 250);

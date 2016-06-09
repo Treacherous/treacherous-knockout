@@ -6090,12 +6090,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		__export(__webpack_require__(2));
 		__export(__webpack_require__(18));
 		__export(__webpack_require__(10));
+		__export(__webpack_require__(11));
+		__export(__webpack_require__(12));
+		__export(__webpack_require__(37));
+		__export(__webpack_require__(38));
 		__export(__webpack_require__(14));
 		__export(__webpack_require__(15));
 		__export(__webpack_require__(16));
 		__export(__webpack_require__(17));
 		__export(__webpack_require__(19));
-		__export(__webpack_require__(37));
+		__export(__webpack_require__(39));
 		__export(__webpack_require__(20));
 		__export(__webpack_require__(21));
 		__export(__webpack_require__(22));
@@ -6106,10 +6110,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		__export(__webpack_require__(27));
 		__export(__webpack_require__(13));
 		__export(__webpack_require__(28));
-		__export(__webpack_require__(11));
-		__export(__webpack_require__(12));
-		__export(__webpack_require__(38));
-		__export(__webpack_require__(39));
 		__export(__webpack_require__(32));
 		__export(__webpack_require__(40));
 		__export(__webpack_require__(31));
@@ -6284,12 +6284,18 @@ return /******/ (function(modules) { // webpackBootstrap
 		            var ruleLinks = [];
 		            var ruleSets = [];
 		            var validationPromises = [];
+		            var currentValue;
+		            try {
+		                currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
+		            }
+		            catch (ex) {
+		                return Promise.resolve();
+		            }
 		            var routeEachRule = function (ruleLinkOrSet) {
 		                if (_this.isForEach(ruleLinkOrSet)) {
-		                    var currentPropertyValue = _this.propertyResolver.resolveProperty(_this.model, propertyName);
-		                    var isCurrentlyAnArray = type_helper_1.TypeHelper.isArrayType(currentPropertyValue);
+		                    var isCurrentlyAnArray = type_helper_1.TypeHelper.isArrayType(currentValue);
 		                    if (isCurrentlyAnArray) {
-		                        currentPropertyValue.forEach(function (element, index) {
+		                        currentValue.forEach(function (element, index) {
 		                            var childPropertyName = propertyName + "[" + index + "]";
 		                            var promise = _this.validatePropertyWithRules(childPropertyName, [ruleLinkOrSet.internalRule]);
 		                            validationPromises.push(promise);
@@ -6335,6 +6341,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		        };
 		        this.hasErrors = function () {
 		            return Object.keys(_this.propertyErrors).length > 0;
+		        };
+		        this.changeValidationTarget = function (model) {
+		            _this.model = model;
+		            _this.modelWatcher.changeWatcherTarget(_this.model);
 		        };
 		        this.isValid = function () {
 		            return _this.waitForValidatorsToFinish()
@@ -6555,7 +6565,18 @@ return /******/ (function(modules) { // webpackBootstrap
 		        var validator = this.ruleRegistry.getRuleNamed(ruleLink.ruleName);
 		        var checkIfValid = function (isValid) {
 		            if (!isValid) {
-		                var error = validator.getMessage(fieldValue, ruleLink.ruleOptions);
+		                var error;
+		                if (ruleLink.messageOverride) {
+		                    if (typeof (ruleLink.messageOverride) === "function") {
+		                        error = (ruleLink.messageOverride)(fieldValue, ruleLink.ruleOptions);
+		                    }
+		                    else {
+		                        error = ruleLink.messageOverride;
+		                    }
+		                }
+		                else {
+		                    error = validator.getMessage(fieldValue, ruleLink.ruleOptions);
+		                }
 		                throw new field_has_error_1.FieldHasError(error);
 		            }
 		            return null;
@@ -6616,7 +6637,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		            delete _this.rules[validationRule.ruleName];
 		        };
 		        this.getRuleNamed = function (ruleName) {
-		            return _this.rules[ruleName];
+		            return _this.rules[ruleName] || null;
+		        };
+		        this.hasRuleNamed = function (ruleName) {
+		            return _this.getRuleNamed(ruleName) != null;
 		        };
 		    }
 		    return RuleRegistry;
@@ -7033,8 +7057,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		var rule_link_1 = __webpack_require__(31);
 		var for_each_rule_1 = __webpack_require__(32);
 		var RulesetBuilder = (function () {
-		    function RulesetBuilder() {
+		    function RulesetBuilder(ruleRegistry) {
 		        var _this = this;
+		        this.ruleRegistry = ruleRegistry;
 		        this.create = function () {
 		            _this.internalRuleset = new ruleset_1.Ruleset();
 		            _this.currentProperty = null;
@@ -7042,20 +7067,41 @@ return /******/ (function(modules) { // webpackBootstrap
 		        };
 		        this.forProperty = function (propertyName) {
 		            _this.currentProperty = propertyName;
+		            _this.currentRule = null;
 		            return _this;
 		        };
 		        this.addRule = function (rule, ruleOptions) {
+		            if (rule == null || typeof (rule) == "undefined" || rule.length == 0) {
+		                throw new Error("A rule name is required");
+		            }
+		            if (_this.ruleRegistry && !_this.ruleRegistry.hasRuleNamed(rule)) {
+		                throw new Error("The rule [" + rule + "] has not been registered");
+		            }
 		            if (!_this.currentProperty) {
 		                throw new Error("A property must precede any rule calls in the chain");
 		            }
-		            _this.internalRuleset.addRule(_this.currentProperty, new rule_link_1.RuleLink(rule, ruleOptions));
+		            _this.internalRuleset.addRule(_this.currentProperty, _this.currentRule = new rule_link_1.RuleLink(rule, ruleOptions));
+		            return _this;
+		        };
+		        this.withMessage = function (messageOverride) {
+		            if (!_this.currentRule) {
+		                throw new Error("A message override must precede an addRule call in the chain");
+		            }
+		            _this.currentRule.messageOverride = messageOverride;
 		            return _this;
 		        };
 		        this.addRuleForEach = function (rule, ruleOptions) {
+		            if (rule == null || typeof (rule) == "undefined" || rule.length == 0) {
+		                throw new Error("A rule name is required");
+		            }
+		            if (_this.ruleRegistry && !_this.ruleRegistry.hasRuleNamed(rule)) {
+		                throw new Error("The rule [" + rule + "] has not been registered");
+		            }
 		            if (!_this.currentProperty) {
 		                throw new Error("A property must precede any rule calls in the chain");
 		            }
 		            var ruleLink = new rule_link_1.RuleLink(rule, ruleOptions);
+		            _this.currentRule = ruleLink;
 		            _this.internalRuleset.addRule(_this.currentProperty, new for_each_rule_1.ForEachRule(ruleLink));
 		            return _this;
 		        };
@@ -7166,6 +7212,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		            _this.scanProperties();
 		            _this.startWatching();
 		        };
+		        this.changeWatcherTarget = function (model) {
+		            _this.model = model;
+		            _this.scanProperties();
+		        };
 		        this.startWatching = function () {
 		            _this.stopWatching();
 		            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
@@ -7177,6 +7227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		        };
 		        this.updateAndNotifyDifferences = function () {
 		            var previousKeyCache = _this.watchCacheKeys;
+		            var previousWatchCache = _this.watchCache;
 		            _this.watchCache = [];
 		            _this.watchCacheKeys = [];
 		            _this.cacheWatchTargets("", _this.ruleset);
@@ -7185,6 +7236,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		                    var previousValue = _this.watchCache[index].previousValue;
 		                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(key, previousValue, null);
 		                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+		                }
+		                else if (previousWatchCache[index].previousValue && previousWatchCache[index].previousValue.isArray) {
+		                    if (previousWatchCache[index].previousValue.length != _this.watchCache[index].previousValue.length) {
+		                        var newValue = _this.watchCache[index].previousValue;
+		                        var previousValue = previousWatchCache[index].previousValue;
+		                        var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(key, newValue, previousValue);
+		                        setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+		                    }
 		                }
 		            });
 		        };
@@ -7197,27 +7256,59 @@ return /******/ (function(modules) { // webpackBootstrap
 		        };
 		        this.cacheWatchTargets = function (propertyStack, ruleset) {
 		            var paramRoute, parameterRules;
+		            var anyRulesAreForEach, anyRulesAreSets;
+		            var hasValue, currentValue;
 		            for (var param in ruleset.rules) {
 		                paramRoute = propertyStack ? propertyStack + "." + param : param;
 		                parameterRules = ruleset.rules[param];
+		                anyRulesAreForEach = false;
+		                anyRulesAreSets = false;
 		                parameterRules.forEach(function (rule) {
-		                    var currentValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
+		                    if (rule.isForEach) {
+		                        anyRulesAreForEach = true;
+		                    }
+		                    if (rule.getRulesForProperty) {
+		                        anyRulesAreSets = true;
+		                    }
+		                });
+		                hasValue = false;
+		                try {
+		                    currentValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
+		                    hasValue = true;
+		                }
+		                catch (ex) { }
+		                if (currentValue == null && (anyRulesAreForEach || anyRulesAreSets)) {
+		                    if (anyRulesAreForEach) {
+		                        currentValue = [];
+		                    }
+		                    else if (anyRulesAreSets) {
+		                        currentValue = {};
+		                    }
+		                    else {
+		                        currentValue = null;
+		                    }
+		                }
+		                parameterRules.forEach(function (rule) {
 		                    var isArray = type_helper_1.TypeHelper.isArrayType(currentValue);
 		                    if (isArray) {
 		                        var cachedArrayInfo = { length: currentValue.length, isArray: true };
 		                        _this.watchProperty(paramRoute, cachedArrayInfo);
 		                    }
-		                    if (rule.isForEach) {
+		                    if (rule.isForEach && hasValue) {
 		                        // ruleset
 		                        if (rule.internalRule.getRulesForProperty) {
-		                            _this.model[param].forEach(function (element, index) {
-		                                _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
-		                            });
+		                            if (_this.model[param]) {
+		                                _this.model[param].forEach(function (element, index) {
+		                                    _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
+		                                });
+		                            }
 		                        }
 		                        else {
-		                            _this.model[param].forEach(function (element, index) {
-		                                _this.watchProperty(paramRoute + "[" + index + "]", _this.model[param][index]);
-		                            });
+		                            if (_this.model[param]) {
+		                                _this.model[param].forEach(function (element, index) {
+		                                    _this.watchProperty(paramRoute + "[" + index + "]", _this.model[param][index]);
+		                                });
+		                            }
 		                        }
 		                    }
 		                    else {
@@ -7243,16 +7334,28 @@ return /******/ (function(modules) { // webpackBootstrap
 		            }
 		            var refreshOnNextCycle = false;
 		            _this.watchCache.forEach(function (propertyWatcher) {
-		                var currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
-		                if (currentValue && propertyWatcher.previousValue.isArray) {
-		                    if (currentValue.length != propertyWatcher.previousValue.length) {
-		                        refreshOnNextCycle = true;
+		                var currentValue;
+		                var hasChanged = false;
+		                try {
+		                    currentValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
+		                }
+		                catch (ex) { }
+		                if (typeof (currentValue) == "undefined") {
+		                    currentValue = propertyWatcher.previousValue;
+		                }
+		                if (propertyWatcher.previousValue && propertyWatcher.previousValue.isArray) {
+		                    var currentLength = currentValue.length || 0;
+		                    if (currentLength != propertyWatcher.previousValue.length) {
+		                        hasChanged = true;
 		                    }
 		                }
 		                else if (currentValue !== propertyWatcher.previousValue) {
 		                    var propertyChangedArgs = new property_changed_event_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
 		                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
 		                    propertyWatcher.previousValue = currentValue;
+		                }
+		                if (hasChanged) {
+		                    refreshOnNextCycle = true;
 		                }
 		            });
 		            if (refreshOnNextCycle) {
@@ -7313,13 +7416,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* 38 */
 	/***/ function(module, exports) {
 
-		
-
-
-	/***/ },
-	/* 39 */
-	/***/ function(module, exports) {
-
 		var ValidationError = (function () {
 		    function ValidationError(propertyName, message) {
 		        this.propertyName = propertyName;
@@ -7328,6 +7424,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		    return ValidationError;
 		})();
 		exports.ValidationError = ValidationError;
+
+
+	/***/ },
+	/* 39 */
+	/***/ function(module, exports) {
+
+		
 
 
 	/***/ },
@@ -7378,7 +7481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * 
 	 */
 	/**
-	 * bluebird build version 3.3.5
+	 * bluebird build version 3.4.0
 	 * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
 	*/
 	!function(e){if(true)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -9790,9 +9893,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (typeof fn !== "function") {
 	        return apiRejection("expecting a function but got " + util.classString(fn));
 	    }
-	    var limit = typeof options === "object" && options !== null
-	        ? options.concurrency
-	        : 0;
+
+	    var limit = 0;
+	    if (options !== undefined) {
+	        if (typeof options === "object" && options !== null) {
+	            if (typeof options.concurrency !== "number") {
+	                return Promise.reject(
+	                    new TypeError("'concurrency' must be a number but it is " +
+	                                    util.classString(options.concurrency)));
+	            }
+	            limit = options.concurrency;
+	        } else {
+	            return Promise.reject(new TypeError(
+	                            "options argument must be an object but it is " +
+	                             util.classString(options)));
+	        }
+	    }
 	    limit = typeof limit === "number" &&
 	        isFinite(limit) && limit >= 1 ? limit : 0;
 	    return new MappingPromiseArray(promises, fn, limit, _filter).promise();
@@ -10705,6 +10821,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	_dereq_("./join")(
 	    Promise, PromiseArray, tryConvertToPromise, INTERNAL, debug);
 	Promise.Promise = Promise;
+	Promise.version = "3.4.0";
 	_dereq_('./map.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug);
 	_dereq_('./call_get.js')(Promise);
 	_dereq_('./using.js')(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug);
@@ -12078,7 +12195,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var hasProp = {}.hasOwnProperty;
 	function isAnyBluebirdPromise(obj) {
-	    return hasProp.call(obj, "_promise0");
+	    try {
+	        return hasProp.call(obj, "_promise0");
+	    } catch (e) {
+	        return false;
+	    }
 	}
 
 	function doThenable(x, then, context) {
@@ -12216,6 +12337,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var inherits = _dereq_("./util").inherits;
 	    var errorObj = util.errorObj;
 	    var tryCatch = util.tryCatch;
+	    var NULL = {};
 
 	    function thrower(e) {
 	        setTimeout(function(){throw e;}, 0);
@@ -12276,14 +12398,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.promise().isFulfilled()) {
 	            return this.promise().value();
 	        }
-	        return null;
+	        return NULL;
 	    };
 
 	    Disposer.prototype.tryDispose = function(inspection) {
 	        var resource = this.resource();
 	        var context = this._context;
 	        if (context !== undefined) context._pushContext();
-	        var ret = resource !== null
+	        var ret = resource !== NULL
 	            ? this.doDispose(resource, inspection) : null;
 	        if (context !== undefined) context._popContext();
 	        this._promise._unsetDisposable();
@@ -13269,6 +13391,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.scanProperties();
 	            _this.startWatching();
 	        };
+	        this.changeWatcherTarget = function (model) {
+	            _this.model = model;
+	            _this.scanProperties();
+	        };
 	        this.startWatching = function () {
 	            _this.stopWatching();
 	            _this.watcherInterval = setInterval(_this.scanProperties, _this.scanInterval);
@@ -13280,6 +13406,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.updateAndNotifyDifferences = function () {
 	            var previousKeyCache = _this.watchCacheKeys;
+	            var previousWatchCache = _this.watchCache;
 	            _this.watchCache = [];
 	            _this.watchCacheKeys = [];
 	            _this.cacheWatchTargets("", _this.ruleset);
@@ -13288,6 +13415,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var previousValue = _this.watchCache[index].previousValue;
 	                    var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(key, previousValue, null);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                }
+	                else if (previousWatchCache[index].previousValue && previousWatchCache[index].previousValue.isArray) {
+	                    if (previousWatchCache[index].previousValue.length != _this.watchCache[index].previousValue.length) {
+	                        var newValue = _this.watchCache[index].previousValue;
+	                        var previousValue = previousWatchCache[index].previousValue;
+	                        var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(key, newValue, previousValue);
+	                        setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
+	                    }
 	                }
 	            });
 	        };
@@ -13300,28 +13435,60 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	        this.cacheWatchTargets = function (propertyStack, ruleset) {
 	            var paramRoute, parameterRules;
+	            var anyRulesAreForEach, anyRulesAreSets;
+	            var hasValue, currentValue;
 	            for (var param in ruleset.rules) {
 	                paramRoute = propertyStack ? propertyStack + "." + param : param;
 	                parameterRules = ruleset.rules[param];
+	                anyRulesAreForEach = false;
+	                anyRulesAreSets = false;
 	                parameterRules.forEach(function (rule) {
+	                    if (rule.isForEach) {
+	                        anyRulesAreForEach = true;
+	                    }
+	                    if (rule.getRulesForProperty) {
+	                        anyRulesAreSets = true;
+	                    }
+	                });
+	                hasValue = false;
+	                try {
 	                    var possibleValue = _this.propertyResolver.resolveProperty(_this.model, paramRoute);
-	                    var currentValue = ko.unwrap(possibleValue);
-	                    var isArray = treacherous_1.TypeHelper.isArrayType(ko.unwrap(currentValue));
+	                    currentValue = ko.unwrap(possibleValue);
+	                    hasValue = true;
+	                }
+	                catch (ex) { }
+	                if (currentValue == null && (anyRulesAreForEach || anyRulesAreSets)) {
+	                    if (anyRulesAreForEach) {
+	                        currentValue = [];
+	                    }
+	                    else if (anyRulesAreSets) {
+	                        currentValue = {};
+	                    }
+	                    else {
+	                        currentValue = null;
+	                    }
+	                }
+	                parameterRules.forEach(function (rule) {
+	                    var isArray = treacherous_1.TypeHelper.isArrayType(currentValue);
 	                    if (isArray) {
-	                        var cachedArrayInfo = { length: ko.unwrap(currentValue).length, isArray: true };
+	                        var cachedArrayInfo = { length: currentValue.length, isArray: true };
 	                        _this.watchProperty(paramRoute, cachedArrayInfo);
 	                    }
-	                    if (rule.isForEach) {
+	                    if (rule.isForEach && hasValue) {
 	                        // ruleset
 	                        if (rule.internalRule.getRulesForProperty) {
-	                            ko.unwrap(_this.model[param]).forEach(function (element, index) {
-	                                _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
-	                            });
+	                            if (_this.model[param]) {
+	                                ko.unwrap(_this.model[param]).forEach(function (element, index) {
+	                                    _this.cacheWatchTargets(paramRoute + "[" + index + "]", rule.internalRule);
+	                                });
+	                            }
 	                        }
 	                        else {
-	                            ko.unwrap(_this.model[param]).forEach(function (element, index) {
-	                                _this.watchProperty(paramRoute + "[" + index + "]", ko.unwrap(_this.model[param])[index]);
-	                            });
+	                            if (_this.model[param]) {
+	                                ko.unwrap(_this.model[param]).forEach(function (element, index) {
+	                                    _this.watchProperty(paramRoute + "[" + index + "]", ko.unwrap(_this.model[param])[index]);
+	                                });
+	                            }
 	                        }
 	                    }
 	                    else {
@@ -13347,17 +13514,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            var refreshOnNextCycle = false;
 	            _this.watchCache.forEach(function (propertyWatcher) {
-	                var possibleValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
-	                var currentValue = ko.unwrap(possibleValue);
-	                if (currentValue && propertyWatcher.previousValue.isArray) {
-	                    if (currentValue.length != propertyWatcher.previousValue.length) {
-	                        refreshOnNextCycle = true;
+	                var currentValue;
+	                var hasChanged = false;
+	                try {
+	                    var possibleValue = _this.propertyResolver.resolveProperty(_this.model, propertyWatcher.propertyPath);
+	                    currentValue = ko.unwrap(possibleValue);
+	                }
+	                catch (ex) { }
+	                if (typeof (currentValue) == "undefined") {
+	                    currentValue = propertyWatcher.previousValue;
+	                }
+	                if (propertyWatcher.previousValue && propertyWatcher.previousValue.isArray) {
+	                    var currentLength = currentValue.length || 0;
+	                    if (currentLength != propertyWatcher.previousValue.length) {
+	                        hasChanged = true;
 	                    }
 	                }
 	                else if (currentValue !== propertyWatcher.previousValue) {
 	                    var propertyChangedArgs = new treacherous_1.PropertyChangedEvent(propertyWatcher.propertyPath, currentValue, propertyWatcher.previousValue);
 	                    setTimeout(function () { _this.onPropertyChanged.publish(propertyChangedArgs); }, 1);
 	                    propertyWatcher.previousValue = currentValue;
+	                }
+	                if (hasChanged) {
+	                    refreshOnNextCycle = true;
 	                }
 	            });
 	            if (refreshOnNextCycle) {
