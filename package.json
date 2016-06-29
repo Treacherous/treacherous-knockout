@@ -1,8 +1,8 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "dependencies": {
-    "treacherous": "^0.7.1",
+    "treacherous": "^0.8.0",
     "knockout": "^3.4.0",
     "property-resolver": "^0.0.6",
     "event-js": "^0.1.0"
@@ -42,6 +42,7 @@
     "karma-chai": "^0.1.0",
     "karma-chai-as-promised": "0.1.2",
     "chai-spies": "latest",
-    "karma-chai-spies": "latest"
+    "karma-chai-spies": "latest",
+    "bluebird": "latest"
   }
 }
