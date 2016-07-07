@@ -17,8 +17,8 @@ Just do an `npm install treacherous-knockout`
 There are 3 flavours in the dist dir:
 
 * `treacherous-knockout.js`         - Contains only treacherous-knockout and no dependencies for use with module loaders
-* `treacherous-knockout.all.js`     - Contains treacherous + treacherous-knockout and all dependencies (including bluebird, knockout, etc)
-* `treacherous-knockout.browser.js` - Contains treacherous-knockout which works without modules for browser usage
+* `treacherous-knockout.testable.js`- This is purely output for karma to test
+* `treacherous-knockout.browser.js` - Contains treacherous-knockout which works without modules for browser usage, still requires knockout included on page.
 
 The reason there are 3 flavours is because some people will use this in a non-module aware
 browser scenario, and `treacherous.all.js` will contain everything for it to just work, it is also

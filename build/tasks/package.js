@@ -12,11 +12,7 @@ gulp.task('package:browser', ["compile"], function () {
         },
         externals: [
             {
-                "bluebird": "var Promise",
-                "eventjs": "var EventJs",
-                "treacherous": "var Treacherous",
-                "knockout": "var ko",
-                "property-resolver": "var PropertyResolver"
+                "knockout": "var ko"
             }
         ]
     };
@@ -36,7 +32,6 @@ gulp.task('package:minimal', ["compile"], function () {
         },
         externals: [
             {
-                "bluebird": true,
                 "eventjs": true,
                 "treacherous": true,
                 "knockout": true,
@@ -55,7 +50,7 @@ gulp.task('package:all', ["compile"], function () {
     var webpackConfig = {
         output: {
             entry: "index.js",
-            filename: "treacherous-knockout.all.js",
+            filename: "treacherous-knockout.testable.js",
             library: "Treacherous",
             libraryTarget: "umd"
         }

@@ -1,8 +1,8 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "dependencies": {
-    "treacherous": "^0.8.0",
+    "treacherous": "^0.9.0",
     "knockout": "^3.4.0",
     "property-resolver": "^0.0.6",
     "event-js": "^0.1.0"

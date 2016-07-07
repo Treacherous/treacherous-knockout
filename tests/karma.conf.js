@@ -7,7 +7,7 @@ module.exports = function(config) {
         frameworks: ['mocha', 'chai-as-promised', 'chai-spies', 'chai'],
 
         files: [
-            'dist/treacherous-knockout.all.js',
+            'dist/treacherous-knockout.testable.js',
             'tests/specs/**/*.js'
         ],
 
