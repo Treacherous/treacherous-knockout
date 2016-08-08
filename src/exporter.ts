@@ -1,8 +1,9 @@
 import * as ko from "knockout";
 
 import {
-    ruleRegistry, FieldErrorProcessor, RuleResolver, ValidationGroupFactory, RulesetBuilder, Ruleset,
-    ValidationGroup, IValidationGroup
+    ruleRegistry, FieldErrorProcessor, RuleResolver, RulesetBuilder, Ruleset,
+    ValidationGroup, ValidationGroupBuilder, ReactiveValidationGroupBuilder,
+    ModelResolverFactory
 } from "treacherous";
 
 import {KnockoutPropertyResolver} from "./model-watcher/knockout-property-resolver";
@@ -10,30 +11,31 @@ import {InlineValidatior} from "./validators/inline-validator";
 import {SimpleValidationSummary} from "./validators/simple-validation-summary";
 import {KnockoutModelWatcherFactory} from "./model-watcher/knockout-model-watcher-factory";
 export {
-    ruleRegistry, FieldErrorProcessor, RuleResolver, ValidationGroupFactory,
+    ruleRegistry, FieldErrorProcessor, RuleResolver,
     RulesetBuilder, Ruleset, ValidationGroup
 } from "treacherous";
 
 var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
 var knockoutPropertyResolver = new KnockoutPropertyResolver();
-var ruleResolver = new RuleResolver();
 var knockoutModelWatcherFactory = new KnockoutModelWatcherFactory(knockoutPropertyResolver);
-var validationGroupFactory = new ValidationGroupFactory(fieldErrorProcessor, knockoutModelWatcherFactory, knockoutPropertyResolver, ruleResolver);
+var modelResolverFactory = new ModelResolverFactory(knockoutPropertyResolver);
 
-export function createRuleset(): RulesetBuilder
+var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+var ruleResolver = new RuleResolver();
+
+export function createRuleset(withRuleVerification = false): RulesetBuilder
 {
-    return new RulesetBuilder().create();
+    var rulesetBuilder = withRuleVerification ? new RulesetBuilder(ruleRegistry) : new RulesetBuilder();
+    return rulesetBuilder.create();
 }
 
-export function createGroupWithRules(model: any, rulesCreator: (rulesetBuilder: RulesetBuilder) => Ruleset): IValidationGroup
+export function createGroup(): ReactiveValidationGroupBuilder
 {
-    var ruleset = rulesCreator(new RulesetBuilder());
-    return validationGroupFactory.createValidationGroup(model, ruleset);
-}
-
-export function createGroup(model: any, ruleset: Ruleset): IValidationGroup
-{
-    return validationGroupFactory.createValidationGroup(model, ruleset);
+    return new ValidationGroupBuilder(fieldErrorProcessor, ruleResolver)
+        .create()
+        .asReactiveGroup()
+        .withModelWatcherFactory(knockoutModelWatcherFactory)
+        .withModelResolverFactory(modelResolverFactory);
 }
 
 ko["validation"] = {

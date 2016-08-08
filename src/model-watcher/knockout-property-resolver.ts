@@ -1,6 +1,7 @@
 import * as ko from "knockout";
+import {IPropertyResolver} from "treacherous";
 
-export class KnockoutPropertyResolver
+export class KnockoutPropertyResolver implements IPropertyResolver
 {
     private indexRegex = /\[(\d)]/;
     private splitRegex =  /\./;

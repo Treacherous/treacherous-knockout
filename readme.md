@@ -21,8 +21,7 @@ There are 3 flavours in the dist dir:
 * `treacherous-knockout.browser.js` - Contains treacherous-knockout which works without modules for browser usage, still requires knockout included on page.
 
 The reason there are 3 flavours is because some people will use this in a non-module aware
-browser scenario, and `treacherous.all.js` will contain everything for it to just work, it is also
-used by the unit tests in the project.
+browser scenario, and `treacherous.testable.js` is mainly for testing.
 
 `treacherous-knockout.js` is purely just the treacherous-knockout library without any dependencies, 
 this is the most modular version of the package and what the `package.json` defaults to. So all dependencies

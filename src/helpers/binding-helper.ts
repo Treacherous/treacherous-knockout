@@ -1,4 +1,4 @@
-import {PropertyStateChangedEvent, IValidationGroup} from "treacherous";
+import {PropertyStateChangedEvent, IReactiveValidationGroup} from "treacherous";
 
 export class BindingHelper
 {
@@ -7,7 +7,7 @@ export class BindingHelper
     public static validationGroup = "validationGroup";
     public static validationOptions = "validationOptions";
 
-    public static getValidationGroup(bindingContext): IValidationGroup {
+    public static getValidationGroup(bindingContext): IReactiveValidationGroup {
         return bindingContext[BindingHelper.validationGroup];
     }
 
@@ -42,7 +42,7 @@ export class BindingHelper
         { ko["validation"]["validator"].handleErrorElement(element, error); }
     }
 
-    public static setupValidationListener(validationGroup: IValidationGroup, propertyPath: string, element: HTMLElement, customHandler = null) {
+    public static setupValidationListener(validationGroup: IReactiveValidationGroup, propertyPath: string, element: HTMLElement, customHandler = null) {
         var predicate = (x: PropertyStateChangedEvent) => { return x.property == propertyPath; };
         var handler;
 

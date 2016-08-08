@@ -1,10 +1,10 @@
 import * as ko from "knockout";
 import {ClassHelper} from "../helpers/class-helper";
-import {IValidationGroup} from "treacherous/index";
+import {IReactiveValidationGroup} from "treacherous/index";
 
 ko.bindingHandlers["validationSummary"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        var validationGroup: IValidationGroup = valueAccessor();
+        var validationGroup: IReactiveValidationGroup = valueAccessor();
 
         var refreshErrorSummary = function() {
             validationGroup.getModelErrors()

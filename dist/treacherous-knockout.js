@@ -67,13 +67,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(6));
+	__export(__webpack_require__(8));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(4));
 	__export(__webpack_require__(5));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(7));
-	__export(__webpack_require__(8));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(4));
 
 
 /***/ },
@@ -90,26 +90,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ruleRegistry = treacherous_2.ruleRegistry;
 	exports.FieldErrorProcessor = treacherous_2.FieldErrorProcessor;
 	exports.RuleResolver = treacherous_2.RuleResolver;
-	exports.ValidationGroupFactory = treacherous_2.ValidationGroupFactory;
 	exports.RulesetBuilder = treacherous_2.RulesetBuilder;
 	exports.Ruleset = treacherous_2.Ruleset;
 	exports.ValidationGroup = treacherous_2.ValidationGroup;
 	var fieldErrorProcessor = new treacherous_1.FieldErrorProcessor(treacherous_1.ruleRegistry);
 	var knockoutPropertyResolver = new knockout_property_resolver_1.KnockoutPropertyResolver();
-	var ruleResolver = new treacherous_1.RuleResolver();
 	var knockoutModelWatcherFactory = new knockout_model_watcher_factory_1.KnockoutModelWatcherFactory(knockoutPropertyResolver);
-	var validationGroupFactory = new treacherous_1.ValidationGroupFactory(fieldErrorProcessor, knockoutModelWatcherFactory, knockoutPropertyResolver, ruleResolver);
-	function createRuleset() {
-	    return new treacherous_1.RulesetBuilder().create();
+	var modelResolverFactory = new treacherous_1.ModelResolverFactory(knockoutPropertyResolver);
+	var fieldErrorProcessor = new treacherous_1.FieldErrorProcessor(treacherous_1.ruleRegistry);
+	var ruleResolver = new treacherous_1.RuleResolver();
+	function createRuleset(withRuleVerification) {
+	    if (withRuleVerification === void 0) { withRuleVerification = false; }
+	    var rulesetBuilder = withRuleVerification ? new treacherous_1.RulesetBuilder(treacherous_1.ruleRegistry) : new treacherous_1.RulesetBuilder();
+	    return rulesetBuilder.create();
 	}
 	exports.createRuleset = createRuleset;
-	function createGroupWithRules(model, rulesCreator) {
-	    var ruleset = rulesCreator(new treacherous_1.RulesetBuilder());
-	    return validationGroupFactory.createValidationGroup(model, ruleset);
-	}
-	exports.createGroupWithRules = createGroupWithRules;
-	function createGroup(model, ruleset) {
-	    return validationGroupFactory.createValidationGroup(model, ruleset);
+	function createGroup() {
+	    return new treacherous_1.ValidationGroupBuilder(fieldErrorProcessor, ruleResolver)
+	        .create()
+	        .asReactiveGroup()
+	        .withModelWatcherFactory(knockoutModelWatcherFactory)
+	        .withModelResolverFactory(modelResolverFactory);
 	}
 	exports.createGroup = createGroup;
 	ko["validation"] = {
