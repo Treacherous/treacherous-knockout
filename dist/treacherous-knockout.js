@@ -7,7 +7,7 @@
 		exports["Treacherous"] = factory(require("knockout"), require("treacherous"), require("property-resolver"));
 	else
 		root["Treacherous"] = factory(root["knockout"], root["treacherous"], root["property-resolver"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_10__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_7__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -66,48 +66,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(20));
 	__export(__webpack_require__(21));
 	__export(__webpack_require__(15));
-	__export(__webpack_require__(6));
-	__export(__webpack_require__(8));
-	__export(__webpack_require__(9));
-	__export(__webpack_require__(4));
+	__export(__webpack_require__(12));
 	__export(__webpack_require__(5));
+	__export(__webpack_require__(6));
+	__export(__webpack_require__(4));
+	__export(__webpack_require__(11));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
-	__export(__webpack_require__(7));
+	__export(__webpack_require__(13));
 
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
 	var ko = __webpack_require__(2);
-	var treacherous_1 = __webpack_require__(3);
-	var knockout_property_resolver_1 = __webpack_require__(4);
-	var inline_validator_1 = __webpack_require__(5);
-	var simple_validation_summary_1 = __webpack_require__(7);
-	var knockout_model_watcher_factory_1 = __webpack_require__(8);
+	__export(__webpack_require__(3));
 	var treacherous_2 = __webpack_require__(3);
-	exports.ruleRegistry = treacherous_2.ruleRegistry;
-	exports.FieldErrorProcessor = treacherous_2.FieldErrorProcessor;
-	exports.RuleResolver = treacherous_2.RuleResolver;
-	exports.RulesetBuilder = treacherous_2.RulesetBuilder;
-	exports.Ruleset = treacherous_2.Ruleset;
-	exports.ValidationGroup = treacherous_2.ValidationGroup;
-	var fieldErrorProcessor = new treacherous_1.FieldErrorProcessor(treacherous_1.ruleRegistry);
+	var knockout_property_resolver_1 = __webpack_require__(4);
+	var knockout_model_watcher_factory_1 = __webpack_require__(5);
+	var inline_validator_1 = __webpack_require__(11);
+	var simple_validation_summary_1 = __webpack_require__(13);
 	var knockoutPropertyResolver = new knockout_property_resolver_1.KnockoutPropertyResolver();
 	var knockoutModelWatcherFactory = new knockout_model_watcher_factory_1.KnockoutModelWatcherFactory(knockoutPropertyResolver);
-	var modelResolverFactory = new treacherous_1.ModelResolverFactory(knockoutPropertyResolver);
-	var fieldErrorProcessor = new treacherous_1.FieldErrorProcessor(treacherous_1.ruleRegistry);
-	var ruleResolver = new treacherous_1.RuleResolver();
-	function createRuleset(withRuleVerification) {
-	    if (withRuleVerification === void 0) { withRuleVerification = false; }
-	    var rulesetBuilder = withRuleVerification ? new treacherous_1.RulesetBuilder(treacherous_1.ruleRegistry) : new treacherous_1.RulesetBuilder();
-	    return rulesetBuilder.create();
-	}
-	exports.createRuleset = createRuleset;
+	var modelResolverFactory = new treacherous_2.ModelResolverFactory(knockoutPropertyResolver);
 	function createGroup() {
-	    return new treacherous_1.ValidationGroupBuilder(fieldErrorProcessor, ruleResolver)
-	        .create()
+	    return treacherous_2.createGroup()
 	        .asReactiveGroup()
 	        .withModelWatcherFactory(knockoutModelWatcherFactory)
 	        .withModelResolverFactory(modelResolverFactory);
@@ -244,118 +231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var class_helper_1 = __webpack_require__(6);
-	var InlineValidatior = (function () {
-	    function InlineValidatior() {
-	        var _this = this;
-	        this.currentCount = 1;
-	        this.getElementValidatorId = function (element) {
-	            if (!element.getAttribute("id")) {
-	                element.setAttribute("id", "unique-" + _this.currentCount++);
-	            }
-	            return element.getAttribute('id') + "-error-container";
-	        };
-	        this.createErrorElement = function (message, element) {
-	            var errorContainerName = _this.getElementValidatorId(element);
-	            var errorContainer = document.createElement("div");
-	            errorContainer.id = errorContainerName;
-	            errorContainer.className = "validation-error-container";
-	            errorContainer.textContent = message;
-	            element.parentElement.appendChild(errorContainer);
-	        };
-	        this.removeErrorElement = function (element) {
-	            var errorContainerName = this.getElementValidatorId(element);
-	            var errorElement = document.getElementById(errorContainerName);
-	            if (errorElement) {
-	                errorElement.remove();
-	            }
-	        };
-	        this.addElementError = function (message, element) {
-	            var errorContainerName = this.getElementValidatorId(element);
-	            var errorContainer = document.getElementById(errorContainerName);
-	            if (!errorContainer) {
-	                this.createErrorElement(message, element);
-	            }
-	            else {
-	                this.removeErrorElement(element);
-	                this.createErrorElement(message, element);
-	            }
-	        };
-	        this.handleValidElement = function (element) {
-	            class_helper_1.ClassHelper.removeClass(element, "invalid");
-	            class_helper_1.ClassHelper.addClass(element, "valid");
-	            _this.removeErrorElement(element);
-	        };
-	        this.handleErrorElement = function (element, error) {
-	            class_helper_1.ClassHelper.removeClass(element, "valid");
-	            class_helper_1.ClassHelper.addClass(element, "invalid");
-	            _this.addElementError(error, element);
-	        };
-	    }
-	    return InlineValidatior;
-	})();
-	exports.InlineValidatior = InlineValidatior;
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	var ClassHelper = (function () {
-	    function ClassHelper() {
-	    }
-	    ClassHelper.hasClass = function (element, className) {
-	        if (element.classList) {
-	            return element.classList.contains(className);
-	        }
-	        return !!element.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
-	    };
-	    ClassHelper.addClass = function (element, className) {
-	        if (element.classList) {
-	            element.classList.add(className);
-	        }
-	        else if (!ClassHelper.hasClass(element, className)) {
-	            element.className += " " + className;
-	        }
-	    };
-	    ClassHelper.removeClass = function (element, className) {
-	        if (element.classList) {
-	            element.classList.remove(className);
-	        }
-	        else if (ClassHelper.hasClass(element, className)) {
-	            var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-	            element.className = element.className.replace(reg, ' ');
-	        }
-	    };
-	    return ClassHelper;
-	})();
-	exports.ClassHelper = ClassHelper;
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	var SimpleValidationSummary = (function () {
-	    function SimpleValidationSummary() {
-	    }
-	    SimpleValidationSummary.prototype.buildSummary = function (errors) {
-	        var newContent = "";
-	        for (var errorParam in errors) {
-	            newContent += "<p class=\"validation-summary-entry\">" + errorParam + " - " + errors[errorParam] + "</p>";
-	        }
-	        return newContent;
-	    };
-	    return SimpleValidationSummary;
-	})();
-	exports.SimpleValidationSummary = SimpleValidationSummary;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var knockout_model_watcher_1 = __webpack_require__(9);
+	var knockout_model_watcher_1 = __webpack_require__(6);
 	var KnockoutModelWatcherFactory = (function () {
 	    function KnockoutModelWatcherFactory(propertyResolver) {
 	        this.propertyResolver = propertyResolver;
@@ -369,12 +245,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var treacherous_1 = __webpack_require__(3);
-	var property_resolver_1 = __webpack_require__(10);
-	var event_js_1 = __webpack_require__(11);
+	var property_resolver_1 = __webpack_require__(7);
+	var event_js_1 = __webpack_require__(8);
 	var ko = __webpack_require__(2);
 	var KnockoutModelWatcher = (function () {
 	    function KnockoutModelWatcher(propertyResolver) {
@@ -555,28 +431,28 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 7 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_7__;
 
 /***/ },
-/* 11 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* This is an auto-generated file by gulp-es6-exporter */
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(13));
+	__export(__webpack_require__(9));
+	__export(__webpack_require__(10));
 
 
 /***/ },
-/* 12 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var event_listener_1 = __webpack_require__(13);
+	var event_listener_1 = __webpack_require__(10);
 	var EventHandler = (function () {
 	    function EventHandler(sender) {
 	        var _this = this;
@@ -631,7 +507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 10 */
 /***/ function(module, exports) {
 
 	var EventListener = (function () {
@@ -642,6 +518,117 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return EventListener;
 	})();
 	exports.EventListener = EventListener;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var class_helper_1 = __webpack_require__(12);
+	var InlineValidatior = (function () {
+	    function InlineValidatior() {
+	        var _this = this;
+	        this.currentCount = 1;
+	        this.getElementValidatorId = function (element) {
+	            if (!element.getAttribute("id")) {
+	                element.setAttribute("id", "unique-" + _this.currentCount++);
+	            }
+	            return element.getAttribute('id') + "-error-container";
+	        };
+	        this.createErrorElement = function (message, element) {
+	            var errorContainerName = _this.getElementValidatorId(element);
+	            var errorContainer = document.createElement("div");
+	            errorContainer.id = errorContainerName;
+	            errorContainer.className = "validation-error-container";
+	            errorContainer.textContent = message;
+	            element.parentElement.appendChild(errorContainer);
+	        };
+	        this.removeErrorElement = function (element) {
+	            var errorContainerName = this.getElementValidatorId(element);
+	            var errorElement = document.getElementById(errorContainerName);
+	            if (errorElement) {
+	                errorElement.remove();
+	            }
+	        };
+	        this.addElementError = function (message, element) {
+	            var errorContainerName = this.getElementValidatorId(element);
+	            var errorContainer = document.getElementById(errorContainerName);
+	            if (!errorContainer) {
+	                this.createErrorElement(message, element);
+	            }
+	            else {
+	                this.removeErrorElement(element);
+	                this.createErrorElement(message, element);
+	            }
+	        };
+	        this.handleValidElement = function (element) {
+	            class_helper_1.ClassHelper.removeClass(element, "invalid");
+	            class_helper_1.ClassHelper.addClass(element, "valid");
+	            _this.removeErrorElement(element);
+	        };
+	        this.handleErrorElement = function (element, error) {
+	            class_helper_1.ClassHelper.removeClass(element, "valid");
+	            class_helper_1.ClassHelper.addClass(element, "invalid");
+	            _this.addElementError(error, element);
+	        };
+	    }
+	    return InlineValidatior;
+	})();
+	exports.InlineValidatior = InlineValidatior;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	var ClassHelper = (function () {
+	    function ClassHelper() {
+	    }
+	    ClassHelper.hasClass = function (element, className) {
+	        if (element.classList) {
+	            return element.classList.contains(className);
+	        }
+	        return !!element.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+	    };
+	    ClassHelper.addClass = function (element, className) {
+	        if (element.classList) {
+	            element.classList.add(className);
+	        }
+	        else if (!ClassHelper.hasClass(element, className)) {
+	            element.className += " " + className;
+	        }
+	    };
+	    ClassHelper.removeClass = function (element, className) {
+	        if (element.classList) {
+	            element.classList.remove(className);
+	        }
+	        else if (ClassHelper.hasClass(element, className)) {
+	            var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+	            element.className = element.className.replace(reg, ' ');
+	        }
+	    };
+	    return ClassHelper;
+	})();
+	exports.ClassHelper = ClassHelper;
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	var SimpleValidationSummary = (function () {
+	    function SimpleValidationSummary() {
+	    }
+	    SimpleValidationSummary.prototype.buildSummary = function (errors) {
+	        var newContent = "";
+	        for (var errorParam in errors) {
+	            newContent += "<p class=\"validation-summary-entry\">" + errorParam + " - " + errors[errorParam] + "</p>";
+	        }
+	        return newContent;
+	    };
+	    return SimpleValidationSummary;
+	})();
+	exports.SimpleValidationSummary = SimpleValidationSummary;
 
 
 /***/ },
@@ -857,7 +844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(2);
-	var class_helper_1 = __webpack_require__(6);
+	var class_helper_1 = __webpack_require__(12);
 	ko.bindingHandlers["validationSummary"] = {
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroup = valueAccessor();

@@ -7,9 +7,10 @@ describe('Validation Group', function () {
         var fieldErrorProcessor = new Treacherous.FieldErrorProcessor(Treacherous.ruleRegistry);
         var propertyResolver = new Treacherous.KnockoutPropertyResolver();
         var ruleResolver = new Treacherous.RuleResolver();
-        var modelWatcher = new Treacherous.KnockoutModelWatcher();
+        var modelWatcherFactory = new Treacherous.KnockoutModelWatcherFactory(propertyResolver);
+        var modelResolverFactory = new Treacherous.ModelResolverFactory(propertyResolver);
 
-        return new Treacherous.ValidationGroup(fieldErrorProcessor, modelWatcher, propertyResolver, ruleResolver, ruleset, model, 50);
+        return new Treacherous.ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, 50);
     }
 
     it('should correctly get errors', function (done) {
@@ -24,13 +25,13 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);
     });
 
     it('should correctly get errors in nested objects', function (done) {
@@ -51,7 +52,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo.bar");
@@ -59,7 +60,7 @@ describe('Validation Group', function () {
                 expect(errors["foo.bar"]).to.contain("9");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);;
     });
 
     it('should correctly get errors in complex arrays', function (done) {
@@ -84,7 +85,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[1].bar");
@@ -94,7 +95,7 @@ describe('Validation Group', function () {
                 expect(errors["foo[2].bar"]).to.contain("5");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);;
     });
 
     it('should correctly get errors in simple arrays', function (done) {
@@ -109,7 +110,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 expect(errors).not.to.be.null;
                 expect(errors).to.include.keys("foo[2]");
@@ -117,7 +118,7 @@ describe('Validation Group', function () {
                 expect(errors["foo[2]"]).to.contain("30");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);;
     });
 
     it('should not apply array errors to child indexes', function (done) {
@@ -133,7 +134,7 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors()
+        validationGroup.getModelErrors(true)
             .then(function(errors){
                 console.log(errors);
                 expect(errors).not.to.be.null;
@@ -143,7 +144,7 @@ describe('Validation Group', function () {
                 expect(errors["foo"]).to.contain("3");
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);;
     });
 
     it('should correctly get errors when invalid elements added to arrays', function (done) {
@@ -171,7 +172,7 @@ describe('Validation Group', function () {
         dummyModel.foo.push({ bar: "too long" });
 
         setTimeout(function(){
-            validationGroup.getModelErrors()
+            validationGroup.getModelErrors(true)
                 .then(function(errors){
                     console.log(errors);
                     expect(errors).not.to.be.null;
@@ -182,7 +183,7 @@ describe('Validation Group', function () {
                     expect(errors["foo[2].bar"]).to.contain("5");
                     validationGroup.release();
                     done();
-                });
+                }).catch(done);;
         }, 100);
     });
 
@@ -349,14 +350,14 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors().then(function(errors){
+        validationGroup.getModelErrors(true).then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
             expect(errors.foo).to.contain("15");
             validationGroup.release();
             done();
-        });
+        }).catch(done);;
     });
 
     it('should correctly return promise indicating validity', function (done) {
@@ -371,14 +372,14 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.getModelErrors().then(function(errors){
+        validationGroup.getModelErrors(true).then(function(errors){
             expect(errors).not.to.be.null;
             expect(errors).to.include.keys("foo");
             expect(errors.foo).to.contain("32");
             expect(errors.foo).to.contain("15");
             validationGroup.release();
             done();
-        });
+        }).catch(done);;
     });
 
     it('should only return errors when all validation events have finished', function (done) {
@@ -411,7 +412,7 @@ describe('Validation Group', function () {
                 expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
-            });
+            }).catch(done);;
 
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
@@ -441,12 +442,13 @@ describe('Validation Group', function () {
         };
 
         var validationGroup = createValidationGroupFor(dummyModel, ruleset);
-        validationGroup.isValid()
-            .then(function(isValid){
-                expect(isValid).to.be.true;
+        validationGroup.getModelErrors()
+            .then(function(errors){
+                expect(errors).to.be.empty;
                 validationGroup.release();
                 done();
-            });
+            })
+            .catch(done);
 
         dummyModel.foo = "invalid";
         dummyModel.foo = "valid";
