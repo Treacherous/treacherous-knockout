@@ -16,3 +16,5 @@ ko.bindingHandlers["validateProperty"] = {
         }
     }
 };
+
+export var validatePropertyBinding: void;

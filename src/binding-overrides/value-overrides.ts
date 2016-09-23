@@ -25,3 +25,5 @@ ko.bindingHandlers.value.init = function(element, valueAccessor, allBindings, vi
 
     return originalValueBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
 };
+
+export var valueBinding: void;

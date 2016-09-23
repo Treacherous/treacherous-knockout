@@ -14,3 +14,5 @@ ko.bindingHandlers.foreach.init = function(element, valueAccessor, allBindings, 
 
     return originalForEachBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
 };
+
+export var foreachBinding: void;

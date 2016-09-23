@@ -25,3 +25,5 @@ ko.bindingHandlers.textInput.init = function(element, valueAccessor, allBindings
 
     return originalTextInputBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
 };
+
+export var textBinding: void;

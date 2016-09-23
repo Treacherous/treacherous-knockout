@@ -5,7 +5,7 @@ import {createGroup, ReactiveValidationGroupBuilder, ModelResolverFactory} from 
 
 import {KnockoutPropertyResolver} from "./model-watcher/knockout-property-resolver";
 import {KnockoutModelWatcherFactory} from "./model-watcher/knockout-model-watcher-factory";
-import {InlineValidatior} from "./validators/inline-validator";
+import {InlineValidator} from "./validators/inline-validator";
 import {SimpleValidationSummary} from "./validators/simple-validation-summary";
 
 var knockoutPropertyResolver = new KnockoutPropertyResolver();
@@ -22,6 +22,6 @@ export function createGroup(): ReactiveValidationGroupBuilder
 }
 
 ko["validation"] = {
-    validator: new InlineValidatior(),
+    validator: new InlineValidator(),
     validationSummary: new SimpleValidationSummary()
 };

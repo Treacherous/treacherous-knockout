@@ -14,3 +14,5 @@ ko.bindingHandlers.with.init = function(element, valueAccessor, allBindings, vie
 
     return originalWithBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
 };
+
+export var withBinding: void;

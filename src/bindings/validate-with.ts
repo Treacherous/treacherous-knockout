@@ -26,3 +26,5 @@ ko.bindingHandlers["validateWith"] = {
         }
     }
 }
+
+export var validateWithBinding: void;

@@ -21,3 +21,5 @@ ko.bindingHandlers["validationSummary"] = {
         refreshErrorSummary();
     }
 }
+
+export var validationSummaryBinding: void;

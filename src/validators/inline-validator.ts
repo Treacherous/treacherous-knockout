@@ -1,7 +1,7 @@
 import {ClassHelper} from "../helpers/class-helper";
 import {IValidator} from "./ivalidator";
 
-export class InlineValidatior implements IValidator
+export class InlineValidator implements IValidator
 {
     private currentCount = 1;
 
