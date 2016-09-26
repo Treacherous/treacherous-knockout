@@ -65,15 +65,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(62));
 	__export(__webpack_require__(63));
 	__export(__webpack_require__(64));
+	__export(__webpack_require__(65));
 	__export(__webpack_require__(58));
 	__export(__webpack_require__(55));
+	__export(__webpack_require__(54));
+	__export(__webpack_require__(66));
+	__export(__webpack_require__(67));
+	__export(__webpack_require__(56));
 	__export(__webpack_require__(52));
 	__export(__webpack_require__(53));
 	__export(__webpack_require__(51));
-	__export(__webpack_require__(54));
-	__export(__webpack_require__(65));
-	__export(__webpack_require__(66));
-	__export(__webpack_require__(56));
 
 
 /***/ },
@@ -2435,18 +2436,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var ko = __webpack_require__(2);
 	var binding_helper_1 = __webpack_require__(58);
-	ko.bindingHandlers["validateProperty"] = {
-	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-	        var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
-	        var propertyPath = valueAccessor();
-	        if (validationGroup) {
-	            binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
-	            validationGroup.getPropertyError(propertyPath)
-	                .then(function (error) {
-	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
-	            });
-	        }
-	    }
+	ko.bindingHandlers.foreach.preprocess = function (value, name, addBinding) {
+	    addBinding(binding_helper_1.BindingHelper.validationPropertyBindingName, "'" + value + "'");
+	    return value;
+	};
+	var originalForEachBindingInit = ko.bindingHandlers.foreach.init;
+	ko.bindingHandlers.foreach.init = function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	    var propertyName = allBindings.get(binding_helper_1.BindingHelper.validationPropertyBindingName);
+	    var propertyPath = binding_helper_1.BindingHelper.getCurrentPropertyPath(propertyName, bindingContext);
+	    bindingContext[binding_helper_1.BindingHelper.validationPropertyPathBindingName] = propertyPath;
+	    return originalForEachBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
 	};
 
 
@@ -2518,80 +2517,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var ko = __webpack_require__(2);
 	var binding_helper_1 = __webpack_require__(58);
-	var defaultOptions = {
-	    inlineValidation: true
-	};
-	ko.bindingHandlers["validateWith"] = {
-	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-	        var bindingOptions = valueAccessor();
-	        if (bindingOptions.getModelErrors) {
-	            bindingContext[binding_helper_1.BindingHelper.validationGroup] = bindingOptions;
-	            bindingContext[binding_helper_1.BindingHelper.validationOptions] = defaultOptions;
-	        }
-	        else {
-	            if (bindingOptions.group) {
-	                bindingContext[binding_helper_1.BindingHelper.validationGroup] = bindingOptions.group;
-	            }
-	            if (bindingOptions.options) {
-	                bindingContext[binding_helper_1.BindingHelper.validationOptions] = bindingOptions.options;
-	            }
-	            else {
-	                bindingContext[binding_helper_1.BindingHelper.validationOptions] = defaultOptions;
-	            }
-	        }
-	    }
-	};
-
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ko = __webpack_require__(2);
-	var class_helper_1 = __webpack_require__(55);
-	ko.bindingHandlers["validationSummary"] = {
-	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-	        var validationGroup = valueAccessor();
-	        var refreshErrorSummary = function () {
-	            validationGroup.getModelErrors()
-	                .then(ko["validation"]["validationSummary"].buildSummary)
-	                .then(function (errorSummary) {
-	                element.innerHTML = errorSummary;
-	            });
-	        };
-	        class_helper_1.ClassHelper.addClass(element, "validation-summary-container");
-	        var unsubscriber = validationGroup.propertyStateChangedEvent.subscribe(refreshErrorSummary);
-	        ko.utils.domNodeDisposal.addDisposeCallback(element, unsubscriber);
-	        refreshErrorSummary();
-	    }
-	};
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ko = __webpack_require__(2);
-	var binding_helper_1 = __webpack_require__(58);
-	ko.bindingHandlers.foreach.preprocess = function (value, name, addBinding) {
-	    addBinding(binding_helper_1.BindingHelper.validationPropertyBindingName, "'" + value + "'");
-	    return value;
-	};
-	var originalForEachBindingInit = ko.bindingHandlers.foreach.init;
-	ko.bindingHandlers.foreach.init = function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-	    var propertyName = allBindings.get(binding_helper_1.BindingHelper.validationPropertyBindingName);
-	    var propertyPath = binding_helper_1.BindingHelper.getCurrentPropertyPath(propertyName, bindingContext);
-	    bindingContext[binding_helper_1.BindingHelper.validationPropertyPathBindingName] = propertyPath;
-	    return originalForEachBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
-	};
-
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ko = __webpack_require__(2);
-	var binding_helper_1 = __webpack_require__(58);
 	ko.bindingHandlers.textInput.preprocess = function (value, name, addBinding) {
 	    addBinding(binding_helper_1.BindingHelper.validationPropertyBindingName, "'" + value + "'");
 	    return value;
@@ -2615,7 +2540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 63 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(2);
@@ -2643,7 +2568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 64 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(2);
@@ -2662,14 +2587,106 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ko = __webpack_require__(2);
+	ko.bindingHandlers["enabled-with"] = {
+	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        var validationGroup = valueAccessor();
+	        validationGroup.modelStateChangedEvent.subscribe(function (eventArgs) {
+	            console.log("should disable, cur, ori", !eventArgs.isValid, eventArgs.isValid);
+	            element.disabled = !eventArgs.isValid;
+	        });
+	    }
+	};
+
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ko = __webpack_require__(2);
+	var binding_helper_1 = __webpack_require__(58);
+	ko.bindingHandlers["validateProperty"] = {
+	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
+	        var propertyPath = valueAccessor();
+	        if (validationGroup) {
+	            binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
+	            validationGroup.getPropertyError(propertyPath)
+	                .then(function (error) {
+	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	            });
+	        }
+	    }
+	};
+
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ko = __webpack_require__(2);
+	var binding_helper_1 = __webpack_require__(58);
+	var defaultOptions = {
+	    inlineValidation: true
+	};
+	ko.bindingHandlers["validateWith"] = {
+	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        var bindingOptions = valueAccessor();
+	        if (bindingOptions.getModelErrors) {
+	            bindingContext[binding_helper_1.BindingHelper.validationGroup] = bindingOptions;
+	            bindingContext[binding_helper_1.BindingHelper.validationOptions] = defaultOptions;
+	        }
+	        else {
+	            if (bindingOptions.group) {
+	                bindingContext[binding_helper_1.BindingHelper.validationGroup] = bindingOptions.group;
+	            }
+	            if (bindingOptions.options) {
+	                bindingContext[binding_helper_1.BindingHelper.validationOptions] = bindingOptions.options;
+	            }
+	            else {
+	                bindingContext[binding_helper_1.BindingHelper.validationOptions] = defaultOptions;
+	            }
+	        }
+	    }
+	};
+
+
+/***/ },
 /* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ko = __webpack_require__(2);
+	var class_helper_1 = __webpack_require__(55);
+	ko.bindingHandlers["validationSummary"] = {
+	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        var validationGroup = valueAccessor();
+	        var refreshErrorSummary = function () {
+	            validationGroup.getModelErrors()
+	                .then(ko["validation"]["validationSummary"].buildSummary)
+	                .then(function (errorSummary) {
+	                element.innerHTML = errorSummary;
+	            });
+	        };
+	        class_helper_1.ClassHelper.addClass(element, "validation-summary-container");
+	        var unsubscriber = validationGroup.propertyStateChangedEvent.subscribe(refreshErrorSummary);
+	        ko.utils.domNodeDisposal.addDisposeCallback(element, unsubscriber);
+	        refreshErrorSummary();
+	    }
+	};
+
+
+/***/ },
+/* 66 */
 /***/ function(module, exports) {
 
 	
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	
