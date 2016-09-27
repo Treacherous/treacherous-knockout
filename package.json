@@ -1,11 +1,11 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "dependencies": {
-    "treacherous": "^0.12.0",
+    "treacherous": "0.12.*",
     "knockout": "^3.4.0",
-    "property-resolver": "^0.0.9",
-    "event-js": "^0.1.1"
+    "property-resolver": "0.0.*",
+    "event-js": "0.1.*"
   },
   "bugs": {
     "url": "https://github.com/grofit/treacherous-knockout/issues"
