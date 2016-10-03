@@ -66,15 +66,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(63));
 	__export(__webpack_require__(64));
 	__export(__webpack_require__(65));
+	__export(__webpack_require__(52));
+	__export(__webpack_require__(53));
+	__export(__webpack_require__(51));
 	__export(__webpack_require__(58));
 	__export(__webpack_require__(55));
 	__export(__webpack_require__(54));
 	__export(__webpack_require__(66));
 	__export(__webpack_require__(67));
 	__export(__webpack_require__(56));
-	__export(__webpack_require__(52));
-	__export(__webpack_require__(53));
-	__export(__webpack_require__(51));
 
 
 /***/ },
@@ -2595,7 +2595,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroup = valueAccessor();
 	        validationGroup.modelStateChangedEvent.subscribe(function (eventArgs) {
-	            console.log("should disable, cur, ori", !eventArgs.isValid, eventArgs.isValid);
 	            element.disabled = !eventArgs.isValid;
 	        });
 	    }
