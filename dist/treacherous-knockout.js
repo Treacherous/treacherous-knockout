@@ -68,13 +68,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(15));
 	__export(__webpack_require__(12));
-	__export(__webpack_require__(5));
-	__export(__webpack_require__(6));
-	__export(__webpack_require__(4));
 	__export(__webpack_require__(11));
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(13));
+	__export(__webpack_require__(5));
+	__export(__webpack_require__(6));
+	__export(__webpack_require__(4));
 
 
 /***/ },
@@ -731,11 +731,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
 	    var validationOptions = binding_helper_1.BindingHelper.getValidationOptions(bindingContext);
 	    bindingContext[binding_helper_1.BindingHelper.validationPropertyPathBindingName] = propertyPath;
-	    if (validationGroup && validationOptions.inlineValidation) {
-	        binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
-	        validationGroup.getPropertyError(propertyPath)
-	            .then(function (error) {
-	            binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	    var hasManualPropertyValidation = allBindings.get("validate-property");
+	    if (validationGroup && !hasManualPropertyValidation) {
+	        valueAccessor().subscribe(function () {
+	            validationGroup.getPropertyError(propertyPath, true)
+	                .then(function (error) {
+	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	            });
 	        });
 	    }
 	    return originalTextInputBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
@@ -754,16 +756,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var originalValueBindingInit = ko.bindingHandlers.value.init;
 	ko.bindingHandlers.value.init = function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	    var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
 	    var propertyName = allBindings.get(binding_helper_1.BindingHelper.validationPropertyBindingName);
 	    var propertyPath = binding_helper_1.BindingHelper.getCurrentPropertyPath(propertyName, bindingContext);
-	    var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
-	    var validationOptions = binding_helper_1.BindingHelper.getValidationOptions(bindingContext);
 	    bindingContext[binding_helper_1.BindingHelper.validationPropertyPathBindingName] = propertyPath;
-	    if (validationGroup && validationOptions.inlineValidation) {
-	        binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
-	        validationGroup.getPropertyError(propertyPath)
-	            .then(function (error) {
-	            binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	    var validationOptions = binding_helper_1.BindingHelper.getValidationOptions(bindingContext);
+	    var hasManualPropertyValidation = allBindings.get("validate-property");
+	    if (validationGroup && !hasManualPropertyValidation) {
+	        valueAccessor().subscribe(function () {
+	            validationGroup.getPropertyError(propertyPath, true)
+	                .then(function (error) {
+	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	            });
 	        });
 	    }
 	    return originalValueBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
@@ -796,11 +800,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ko = __webpack_require__(2);
 	ko.bindingHandlers["enabled-with"] = {
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-	        var validationGroup = valueAccessor();
+	        var validationGroupOrGroups = valueAccessor();
 	        element.disabled = true;
-	        validationGroup.modelStateChangedEvent.subscribe(function (eventArgs) {
+	        var handleStateChange = function (eventArgs) {
 	            element.disabled = !eventArgs.isValid;
-	        });
+	        };
+	        if (typeof (validationGroupOrGroups) == "array") {
+	            validationGroupOrGroups.forEach(function (validationGroup) {
+	                validationGroup.modelStateChangedEvent.subscribe(handleStateChange);
+	            });
+	        }
+	        else {
+	            validationGroupOrGroups.modelStateChangedEvent.subscribe(handleStateChange);
+	        }
 	    }
 	};
 
@@ -815,26 +827,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
 	        var propertyPath = valueAccessor();
-	        var currentError;
-	        var hasInputStarted = false;
-	        var onElementChanged = function () {
-	            hasInputStarted = true;
-	            element.removeEventListener("focus", onElementChanged);
-	            console.log("NOW RESPONDING");
-	            binding_helper_1.BindingHelper.handleElementError(element, !currentError, currentError);
-	        };
-	        element.addEventListener('focus', onElementChanged);
-	        if (validationGroup) {
-	            binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
-	            validationGroup.getPropertyError(propertyPath)
+	        valueAccessor().subscribe(function () {
+	            validationGroup.getPropertyError(propertyPath, true)
 	                .then(function (error) {
-	                currentError = error;
-	                if (hasInputStarted) {
-	                    console.log("HANDLING");
-	                    binding_helper_1.BindingHelper.handleElementError(element, !currentError, currentError);
-	                }
+	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
 	            });
-	        }
+	        });
 	    }
 	};
 

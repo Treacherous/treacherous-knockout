@@ -14,13 +14,15 @@ ko.bindingHandlers.textInput.init = function(element, valueAccessor, allBindings
     var validationOptions = BindingHelper.getValidationOptions(bindingContext);
     bindingContext[BindingHelper.validationPropertyPathBindingName] = propertyPath;
 
-    if(validationGroup && validationOptions.inlineValidation)
-    {
-        BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
-        validationGroup.getPropertyError(propertyPath)
-            .then(function(error){
-                BindingHelper.handleElementError(element, !error, error);
-            });
+    var hasManualPropertyValidation = allBindings.get("validate-property");
+
+    if(validationGroup && !hasManualPropertyValidation) {
+        valueAccessor().subscribe(() => {
+            validationGroup.getPropertyError(propertyPath, true)
+                .then(function(error){
+                    BindingHelper.handleElementError(element, !error, error);
+                });
+        });
     }
 
     return originalTextInputBindingInit(element, valueAccessor, allBindings, viewModel, bindingContext);
