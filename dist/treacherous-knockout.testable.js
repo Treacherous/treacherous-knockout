@@ -66,11 +66,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(65));
 	__export(__webpack_require__(66));
 	__export(__webpack_require__(67));
+	__export(__webpack_require__(60));
+	__export(__webpack_require__(57));
 	__export(__webpack_require__(54));
 	__export(__webpack_require__(55));
 	__export(__webpack_require__(53));
-	__export(__webpack_require__(60));
-	__export(__webpack_require__(57));
 	__export(__webpack_require__(56));
 	__export(__webpack_require__(68));
 	__export(__webpack_require__(69));
@@ -8489,6 +8489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	ko.bindingHandlers["enabled-with"] = {
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroup = valueAccessor();
+	        element.disabled = true;
 	        validationGroup.modelStateChangedEvent.subscribe(function (eventArgs) {
 	            element.disabled = !eventArgs.isValid;
 	        });
@@ -8506,11 +8507,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
 	        var propertyPath = valueAccessor();
+	        var currentError;
+	        var hasInputStarted = false;
+	        var onElementChanged = function () {
+	            hasInputStarted = true;
+	            element.removeEventListener("focus", onElementChanged);
+	            console.log("NOW RESPONDING");
+	            binding_helper_1.BindingHelper.handleElementError(element, !currentError, currentError);
+	        };
+	        element.addEventListener('focus', onElementChanged);
 	        if (validationGroup) {
 	            binding_helper_1.BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
 	            validationGroup.getPropertyError(propertyPath)
 	                .then(function (error) {
-	                binding_helper_1.BindingHelper.handleElementError(element, !error, error);
+	                currentError = error;
+	                if (hasInputStarted) {
+	                    console.log("HANDLING");
+	                    binding_helper_1.BindingHelper.handleElementError(element, !currentError, currentError);
+	                }
 	            });
 	        }
 	    }

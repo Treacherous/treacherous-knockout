@@ -6,12 +6,27 @@ ko.bindingHandlers["validateProperty"] = {
         var validationGroup = BindingHelper.getValidationGroup(bindingContext);
         var propertyPath = valueAccessor();
 
+        var currentError;
+        var hasInputStarted = false;
+        var onElementChanged = () => {
+            hasInputStarted = true;
+            element.removeEventListener("focus", onElementChanged);
+            console.log("NOW RESPONDING");
+            BindingHelper.handleElementError(element, !currentError, currentError);
+        };
+
+        element.addEventListener('focus', onElementChanged);
+
         if(validationGroup)
         {
             BindingHelper.setupValidationListener(validationGroup, propertyPath, element);
             validationGroup.getPropertyError(propertyPath)
                 .then(function(error){
-                    BindingHelper.handleElementError(element, !error, error);
+                    currentError = error;
+                    if(hasInputStarted){
+                        console.log("HANDLING");
+                        BindingHelper.handleElementError(element, !currentError, currentError);
+                    }
                 });
         }
     }
