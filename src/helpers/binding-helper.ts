@@ -6,6 +6,7 @@ export class BindingHelper
     public static validationPropertyPathBindingName = "validationPropertyPath";
     public static validationGroup = "validationGroup";
     public static validationOptions = "validationOptions";
+    public static viewStrategy = "viewStrategy";
 
     public static getValidationGroup(bindingContext): IReactiveValidationGroup {
         return bindingContext[BindingHelper.validationGroup];
@@ -13,6 +14,10 @@ export class BindingHelper
 
     public static getValidationOptions(bindingContext): any {
         return bindingContext[BindingHelper.validationOptions];
+    }
+
+    public static getViewStrategy(bindingContext): any {
+        return bindingContext[BindingHelper.viewStrategy] || "inline";
     }
 
     public static getCurrentPropertyPath(propertyName: string, bindingContext): string {

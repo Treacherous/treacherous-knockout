@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import {BindingHelper} from "../helpers/binding-helper";
+import {BindingHelper} from "../../helpers/binding-helper";
 
 ko.bindingHandlers.foreach.preprocess = function(value, name, addBinding) {
     addBinding(BindingHelper.validationPropertyBindingName, "'" + value + "'");

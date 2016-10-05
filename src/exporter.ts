@@ -1,12 +1,11 @@
 import * as ko from "knockout";
 export * from "treacherous";
+export * from "treacherous-view";
 
-import {createGroup, ReactiveValidationGroupBuilder, ModelResolverFactory} from "treacherous";
+import {createGroup, ModelResolverFactory, ValidationGroupBuilder, ReactiveValidationGroupBuilder} from "treacherous";
 
 import {KnockoutPropertyResolver} from "./model-watcher/knockout-property-resolver";
 import {KnockoutModelWatcherFactory} from "./model-watcher/knockout-model-watcher-factory";
-import {InlineValidator} from "./validators/inline-validator";
-import {SimpleValidationSummary} from "./validators/simple-validation-summary";
 
 var knockoutPropertyResolver = new KnockoutPropertyResolver();
 var knockoutModelWatcherFactory = new KnockoutModelWatcherFactory(knockoutPropertyResolver);
@@ -17,11 +16,6 @@ export function createGroup(): ReactiveValidationGroupBuilder
     return createGroup()
         .andValidateOnStart()
         .asReactiveGroup()
-        .withModelWatcherFactory(knockoutModelWatcherFactory)
-        .withModelResolverFactory(modelResolverFactory);
+        .withModelResolverFactory(modelResolverFactory)
+        .withModelWatcherFactory(knockoutModelWatcherFactory);
 }
-
-ko["validation"] = {
-    validator: new InlineValidator(),
-    validationSummary: new SimpleValidationSummary()
-};

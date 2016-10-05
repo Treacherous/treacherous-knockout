@@ -1,29 +1,16 @@
 import * as ko from "knockout";
 import {BindingHelper} from "../helpers/binding-helper";
+import {ElementHelper} from "treacherous-view";
 
-var defaultOptions = {
-    inlineValidation: true
-}
 
-ko.bindingHandlers["validateWith"] = {
+ko.bindingHandlers["validate-with"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var bindingOptions = valueAccessor();
-        
-        if(bindingOptions.getModelErrors)
-        {
-            bindingContext[BindingHelper.validationGroup] = bindingOptions;
-            bindingContext[BindingHelper.validationOptions] = defaultOptions;
-        }
-        else
-        {
-            if(bindingOptions.group)
-            { bindingContext[BindingHelper.validationGroup] = bindingOptions.group; }
-
-            if(bindingOptions.options)
-            { bindingContext[BindingHelper.validationOptions] = bindingOptions.options; }
-            else
-            { bindingContext[BindingHelper.validationOptions] = defaultOptions; }
-        }
+        var strategy = ElementHelper.getStrategyFrom(element) || "inline";
+        var options = ElementHelper.getOptionsFrom(element) || {};
+        bindingContext[BindingHelper.validationGroup] = bindingOptions;
+        bindingContext[BindingHelper.validationOptions] = options;
+        bindingContext[BindingHelper.viewStrategy] = strategy;
     }
 }
 

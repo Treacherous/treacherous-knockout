@@ -24,7 +24,7 @@
 </head>
 <body>
     <h2>Validate with nested objects and iterated elements</h2>
-    <section data-bind="validateWith: validationGroup">
+    <section data-bind="validate-with: validationGroup">
         <div>
             <label>Some Number</label>
             <input data-bind="value: someNumber"/>
@@ -46,25 +46,8 @@
         <button data-bind="enabled-with: validationGroup">Enabled based upon validation state</button>
     </section>
 
-    <h2>Manually validate properties</h2>
-    <section>
-        <div>
-            <p>someArray Property Error</p>
-            <div data-bind="validateProperty: 'someArray'"></div>
-        </div>
-        <div>
-            <p>someArray[1] Error</p>
-            <div data-bind="validateProperty: 'someArray[1]'"></div>
-        </div>
-    </section>
-
-    <h2>A validation summary</h2>
-    <section>
-        <div data-bind="validationSummary: validationGroup"></div>
-    </section>
-
-    <h2>No auto inline validation, just manual</h2>
-    <section data-bind="validateWith: { group: validationGroup, options: { inlineValidation: false } }">
+    <h2>Force validation when everything loads</h2>
+    <section data-bind="validate-with: validationGroup" validation-options="immediateErrors: true">
         <div>
             <label>Some Number</label>
             <input data-bind="value: someNumber"/>
@@ -74,9 +57,8 @@
             <input data-bind="value: someText"/>
         </div>
         <div>
-            <label>Some Nested Number (this will show inline errors)</label>
+            <label>Some Nested Number</label>
             <input data-bind="value: someNestedObject.someNumber"/>
-            <div data-bind="validateProperty: 'someNestedObject.someNumber'"></div>
         </div>
         <!-- ko foreach: someArray -->
         <div>
@@ -84,8 +66,8 @@
             <input data-bind="textInput: $rawData"/>
         </div>
         <!-- /ko -->
+        <button data-bind="enabled-with: validationGroup, click: doSomething">Enabled based upon validation state</button>
     </section>
-
 
     <script type="text/javascript" src="libs/bluebird.js"></script>
     <script type="text/javascript" src="libs/knockout.js"></script>
@@ -100,7 +82,8 @@
             },
             someArray: ko.observableArray([
                 ko.observable(10), ko.observable(15), ko.observable(30)
-            ])
+            ]),
+            doSomething: function() { console.log("HIT"); }
         };
 
         var nestedRuleset = Treacherous.createRuleset()

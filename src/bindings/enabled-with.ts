@@ -1,16 +1,32 @@
 import * as ko from "knockout";
-import {ReactiveValidationGroup} from "treacherous";
+import {ReactiveValidationGroup, ValidationGroup, IValidationGroup} from "treacherous";
+
+var pollModelErrors = (validationGroup: IValidationGroup, callback) => {
+    return setTimeout(() => {
+        validationGroup.getModelErrors()
+            .then((errors) => {
+                var hasErrors = (Object.keys(errors).length > 0);
+                if(hasErrors){ callback(hasErrors); }
+            });
+    }, 500)
+};
 
 ko.bindingHandlers["enabled-with"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var validationGroupOrGroups = valueAccessor();
+        var isArray = typeof(validationGroupOrGroups) == "array";
+        var isReactive = !!validationGroupOrGroups.modelStateChangedEvent;
+
+        if(!isReactive) {
+            console.warn("enabled-with binding requires a reactive validation group");
+            return;
+        }
+
         element.disabled = true;
 
-        var handleStateChange = (eventArgs) => {
-            element.disabled = !eventArgs.isValid;
-        };
+        var handleStateChange = (eventArgs) => { element.disabled = !eventArgs.isValid; };
 
-        if(typeof(validationGroupOrGroups) == "array")
+        if(isArray)
         {
             validationGroupOrGroups.forEach((validationGroup: ReactiveValidationGroup) => {
                 validationGroup.modelStateChangedEvent.subscribe(handleStateChange);
@@ -18,6 +34,17 @@ ko.bindingHandlers["enabled-with"] = {
         }
         else
         { validationGroupOrGroups.modelStateChangedEvent.subscribe(handleStateChange); }
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+            if(isArray)
+            {
+                validationGroupOrGroups.forEach((validationGroup: ReactiveValidationGroup) => {
+                    validationGroup.modelStateChangedEvent.unsubscribe(handleStateChange);
+                });
+            }
+            else
+            { validationGroupOrGroups.modelStateChangedEvent.unsubscribe(handleStateChange); }
+        });
     }
 };
 
