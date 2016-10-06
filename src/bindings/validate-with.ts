@@ -9,7 +9,7 @@ ko.bindingHandlers["validate-with"] = {
         var strategy = ElementHelper.getStrategyFrom(element) || "inline";
         var options = ElementHelper.getOptionsFrom(element) || {};
         bindingContext[BindingHelper.validationGroup] = bindingOptions;
-        bindingContext[BindingHelper.validationOptions] = options;
+        bindingContext[BindingHelper.viewOptions] = options;
         bindingContext[BindingHelper.viewStrategy] = strategy;
     }
 }

@@ -5,15 +5,15 @@ export class BindingHelper
     public static validationPropertyBindingName = "validationProperty";
     public static validationPropertyPathBindingName = "validationPropertyPath";
     public static validationGroup = "validationGroup";
-    public static validationOptions = "validationOptions";
+    public static viewOptions = "viewOptions";
     public static viewStrategy = "viewStrategy";
 
     public static getValidationGroup(bindingContext): IReactiveValidationGroup {
         return bindingContext[BindingHelper.validationGroup];
     }
 
-    public static getValidationOptions(bindingContext): any {
-        return bindingContext[BindingHelper.validationOptions];
+    public static getViewOptions(bindingContext): any {
+        return bindingContext[BindingHelper.viewOptions];
     }
 
     public static getViewStrategy(bindingContext): any {

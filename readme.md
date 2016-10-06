@@ -42,7 +42,7 @@ Here is an example of what it does and how to use it.
 
 This adds a few bindings for you to consume to allow your `validationGroup` instances to be used within the view.
 
-### `validateWith` Binding
+### `validate-with` Binding
 
 This binding is very much like a `with` binding, where it provides the validation group to the child bindingContext
 scopes, this allows any `value` or `textInput` calls to automatically pick up the validation group and self 
@@ -55,22 +55,25 @@ register themselves for notifications if available.
 
 #### Advanced Usage
 ```html
-<section data-bind="validateWith: { group: someValidationGroup, options: { inlineValidation: false} }">...</section>
+<section data-bind="validateWith: someValidationGroup" view-options="immediateErrors: true">...</section>
 ```
 
-The advanced usage supports:
+As treacherous is made to be cross platform/framework it generally uses attributes for configuration
+based hinting, so the above example hints that we should immediately show errors when the VM loads.
 
-- **group** : The validation group to use within children of this element
-- **options** : An object containing any custom options for use in child bindings
-    - **inlineValidation** : If value/textInput bindings in children should automatically show inline validation
+Here are a list of the available configuration attributes available:
 
+- **view-strategy** : Defauls to "inline" but you can specify "none" to turn off inline, or use a custom strategy
+- **view-options** : An object containing any custom options for use within the view strategy
+    - **immediateErrors** : If true errors will be displayed the moment the page loads, rather than waiting for model changes
 
-### `validateProperty` Binding
+### `show-error` Binding
 
-This binding is for manually showing property errors, you can put this anywhere and it will automatically populate
-the errors for that property into the element you are using.
+This binding is for explicitly showing property errors, you can put this anywhere and it will automatically populate
+the errors for that property into the element you are using. Normally the value/inputText bindings will be proxied
+and automatically handle validation, but if that fails or you wish to override it you can use this.
 
-This is useful for things which would not automatically be picked up in the UI, such as arrays with max/min length
+This is also useful for things which would not automatically be picked up in the UI, such as arrays with max/min length
 rules which would not automatically be picked up, so you could explicitly show them wherever you please.
 
 This is also handy for convoluted scenarios where you have some complex custom descendant bindings which are not picking
@@ -78,41 +81,49 @@ up the right bindings, so in those cases you at least have a manual way to infer
 
 #### Basic Usage
 ```html
-<div data-bind="validateProperty: 'someArray'"></div>
+<div data-bind="show-error" validate-property="someProperty"></div>
 ```
 
 #### Advanced Usage
 ```html
-<div data-bind="validateProperty: 'someArray[' + index() + '].bar'"></div>
+<div data-bind="show-error, attr: { 'validate-property': 'someArray[' + index() + '].foo'}"></div>
 ```
 
 Remember you want to pass the string literal for the property, this allows you to be able to use the 
-knockout context variables in the view if you are within an iteration etc.
+knockout context variables in the view if you are within an iteration etc. You also need to make sure
+that this call is within a `validate-with` container.
 
-### `validationSummary` Binding
+### `validation-summary` Binding
 
 This binding populates the element with a validation summary showing all current errors for the model.
 
 #### Usage
 ```html
-<div data-bind="validationSummary: someValidationGroup"></div>
+<div data-bind="validation-summary"></div>
 ```
 
-You can use this binding anywhere on the page regardless of if it is within the scope of a `validateWith` binding, 
-this way if you have multiple validators on the page you can have them all be output in one place.
+#### Advanced Usage
+```html
+<div data-bind="validation-summary: [ validationGroupOne, validationGroupTwo ]"></div>
+```
+
+You can use this binding within the scope of a `validateWith` binding, or explicitly pass it one or many
+validation groups, this way if you have multiple validators on the page you can have them all be output 
+in one place.
 
 ## Styling
 
-By default there is no styling, as its up to you really how you want to style your inline/summary errors, 
-there are some classes which are appended by default which should target in your css:
+By default there is no styling, as its up to you really how you want to style your view errors, 
+there are some classes which are appended by the default view strategies which you should target in your css:
 
 - **.valid** : When a the property associated is valid (you would probably do `input.valid` in most cases) 
 - **.invalid** : When the property associated is invalid (you would probably do `input.invalid` in most cases)
 - **.validation-error-container** : The element containing an inline error for a property
 - **.validation-summary-container** : The element containing the validation summary elements
+- **.summary-error** : The element containing each validation summary error
 
-These classes are defined within the default `InlineValidator` as well, `SimpleValidationSummary`, so if 
-you use your own implementations here you can define any classes you want.
+These classes are defined within the `treacherous-view` so if you make your own instances of `IViewStrategy` 
+or your own `ViewSummary` type you can change it to output whatever you want.
 
 ## Extending
 
@@ -121,17 +132,14 @@ you use your own implementations here you can define any classes you want.
 So by default there is some magic which proxies the default `value` and `textInput` bindings to allow inline 
 validation for free, there are also some proxies around `with` and `foreach` which basically allow the scope
 of the properties. So if you have any custom bindings which you want to auto-magically support inline validation 
-or pass descendant property scopes down to, look at the examples in the `binding-overrides` folder.
+or pass descendant property scopes down to, look at the examples in the `binding/overrides` folder.
 
-### Custom Validators
+### Custom View Strategies
 
-Out the box there are 2 default validators, `InlineValidator` and `SimpleValidationSummary`, which can be found
-within the `validators` folder. These both have interfaces (it's a typescript thing) which show the required 
-properties and methods for the classes to be used by the system.
-
-By default these 2 classes are instantiated on setup and passed into `ko.validation.validator` and 
-`ko.validation.validationSummary`. So if you want to write your own, then you would set the relevant
-entry with your instance.
+Out the box there is one view strategy `inline` and a default summary binding `ValidationSummary`, which primarily 
+come from `treacherous-view`, as these are all pre-made it would be best ot look at the `treacherous-view` repo 
+for more information, as these are just wrapped up in bindings, but you can easily make your own view strategies 
+and register them for use.
 
 A good example of this would be if you wanted to use qtip2 (other tooltip libraries are available) as your
 inline validation system, which would make tooltips to show validation errors rather than the default inline

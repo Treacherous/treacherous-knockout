@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import {ReactiveValidationGroup, ValidationGroup, IValidationGroup} from "treacherous";
+import {IValidationGroup, IReactiveValidationGroup} from "treacherous";
 
 var pollModelErrors = (validationGroup: IValidationGroup, callback) => {
     return setTimeout(() => {
@@ -28,7 +28,7 @@ ko.bindingHandlers["enabled-with"] = {
 
         if(isArray)
         {
-            validationGroupOrGroups.forEach((validationGroup: ReactiveValidationGroup) => {
+            validationGroupOrGroups.forEach((validationGroup: IReactiveValidationGroup) => {
                 validationGroup.modelStateChangedEvent.subscribe(handleStateChange);
             });
         }
@@ -38,7 +38,7 @@ ko.bindingHandlers["enabled-with"] = {
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             if(isArray)
             {
-                validationGroupOrGroups.forEach((validationGroup: ReactiveValidationGroup) => {
+                validationGroupOrGroups.forEach((validationGroup: IReactiveValidationGroup) => {
                     validationGroup.modelStateChangedEvent.unsubscribe(handleStateChange);
                 });
             }

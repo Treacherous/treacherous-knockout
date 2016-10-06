@@ -1,11 +1,12 @@
 import {BindingHelper} from "../helpers/binding-helper";
-import {viewStrategyRegistry, ElementHelper} from "treacherous-view";
+import {viewStrategyRegistry, ElementHelper, ValidationState} from "treacherous-view";
 
 export class ValidationHandler
 {
     public static handleValidation(element, propertyPath, propertyObservable, bindingContext) {
         var validationGroup = BindingHelper.getValidationGroup(bindingContext);
-        var validationOptions = BindingHelper.getValidationOptions(bindingContext);
+        var viewOptions = BindingHelper.getViewOptions(bindingContext);
+        var validationState = ValidationState.unknown;
         bindingContext[BindingHelper.validationPropertyPathBindingName] = propertyPath;
 
         var strategy = ElementHelper.getStrategyFrom(element) || BindingHelper.getViewStrategy(bindingContext);
@@ -21,14 +22,22 @@ export class ValidationHandler
         var getPropertyError = () => {
             validationGroup.getPropertyError(propertyPath, true)
                 .then(function(error){
-                    if(!error){ viewStrategy.propertyBecomeValid(element, propertyPath, null); }
-                    else { viewStrategy.propertyBecomeInvalid(element, error, propertyPath, null); }
+                    if(!error)
+                    {
+                        viewStrategy.propertyBecomeValid(element, propertyPath, validationState);
+                        validationState = ValidationState.valid;
+                    }
+                    else
+                    {
+                        viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState);
+                        validationState = ValidationState.invalid;
+                    }
                 });
         }
 
         propertyObservable.subscribe(getPropertyError);
 
-        if(validationOptions.immediateErrors)
+        if(viewOptions.immediateErrors)
         { getPropertyError(); }
     };
 }

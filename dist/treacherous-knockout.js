@@ -62,14 +62,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(23));
 	__export(__webpack_require__(26));
 	__export(__webpack_require__(24));
+	__export(__webpack_require__(27));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(16));
 	__export(__webpack_require__(17));
 	__export(__webpack_require__(14));
-	__export(__webpack_require__(27));
 	__export(__webpack_require__(28));
 	__export(__webpack_require__(29));
 	__export(__webpack_require__(30));
+	__export(__webpack_require__(31));
 
 
 /***/ },
@@ -200,7 +201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            element.classList.add(className);
 	        }
 	        else if (!ClassHelper.hasClass(element, className)) {
-	            element.className += " " + className;
+	            element.errorClassName += " " + className;
 	        }
 	    };
 	    ClassHelper.removeClass = function (element, className) {
@@ -209,7 +210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        else if (ClassHelper.hasClass(element, className)) {
 	            var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
-	            element.className = element.className.replace(reg, ' ');
+	            element.errorClassName = element.className.replace(reg, ' ');
 	        }
 	    };
 	    return ClassHelper;
@@ -332,29 +333,43 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 12 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var class_helper_1 = __webpack_require__(7);
 	var SummaryHandler = (function () {
 	    function SummaryHandler() {
+	        var _this = this;
+	        this.applyContainerClass = function (summaryContainerElement) {
+	            class_helper_1.ClassHelper.addClass(summaryContainerElement, SummaryHandler.containerClassName);
+	        };
+	        this.getPropertyElementName = function (propertyRoute) {
+	            var sanitisedPropertyRoute = propertyRoute.replace(/[\[\].]/g, "-");
+	            return "" + SummaryHandler.elementIdFormat + sanitisedPropertyRoute;
+	        };
 	        this.getPropertyErrorElement = function (summaryContainerElement, propertyRoute) {
-	            return summaryContainerElement.querySelector("#" + SummaryHandler.elementIdFormat + propertyRoute);
+	            var elementName = _this.getPropertyElementName(propertyRoute);
+	            return summaryContainerElement.querySelector("#" + elementName);
 	        };
 	        this.createPropertyErrorElement = function (message, summaryContainerElement, propertyRoute) {
+	            var elementName = _this.getPropertyElementName(propertyRoute);
 	            var errorContainer = document.createElement("div");
-	            errorContainer.id = "#" + SummaryHandler.elementIdFormat + propertyRoute;
-	            errorContainer.className = "summary-validation-error";
+	            errorContainer.id = elementName;
+	            errorContainer.className = SummaryHandler.errorClassName;
 	            errorContainer.textContent = message;
-	            summaryContainerElement.parentElement.appendChild(errorContainer);
+	            errorContainer.setAttribute("property-route", propertyRoute);
+	            summaryContainerElement.appendChild(errorContainer);
 	        };
 	        this.removePropertyErrorElement = function (summaryContainerElement, propertyRoute) {
-	            var errorElement = this.getPropertyErrorElement(summaryContainerElement, propertyRoute);
+	            var errorElement = _this.getPropertyErrorElement(summaryContainerElement, propertyRoute);
 	            if (errorElement) {
 	                summaryContainerElement.removeChild(errorElement);
 	            }
 	        };
 	    }
 	    SummaryHandler.elementIdFormat = "summary-error-for-";
+	    SummaryHandler.errorClassName = "summary--error";
+	    SummaryHandler.containerClassName = "validation-summary-container";
 	    return SummaryHandler;
 	}());
 	exports.SummaryHandler = SummaryHandler;
@@ -366,24 +381,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var summary_handler_1 = __webpack_require__(12);
-	var SummaryStrategy = (function () {
-	    function SummaryStrategy(summaryHandler) {
+	var ViewSummary = (function () {
+	    function ViewSummary(summaryHandler) {
 	        if (summaryHandler === void 0) { summaryHandler = new summary_handler_1.SummaryHandler(); }
 	        this.summaryHandler = summaryHandler;
-	        this.strategyName = "summary";
-	        this.errors = {};
 	    }
-	    SummaryStrategy.prototype.propertyBecomeValid = function (summaryContainerElement, propertyRoute) {
-	        delete this.errors[propertyRoute];
+	    ViewSummary.prototype.setupContainer = function (summaryContainerElement) {
+	        this.summaryHandler.applyContainerClass(summaryContainerElement);
+	    };
+	    ViewSummary.prototype.propertyBecomeValid = function (summaryContainerElement, propertyRoute) {
 	        this.summaryHandler.removePropertyErrorElement(summaryContainerElement, propertyRoute);
 	    };
-	    SummaryStrategy.prototype.propertyBecomeInvalid = function (summaryContainerElement, error, propertyRoute) {
+	    ViewSummary.prototype.propertyBecomeInvalid = function (summaryContainerElement, error, propertyRoute) {
 	        this.summaryHandler.removePropertyErrorElement(summaryContainerElement, propertyRoute);
 	        this.summaryHandler.createPropertyErrorElement(error, summaryContainerElement, propertyRoute);
 	    };
-	    return SummaryStrategy;
+	    return ViewSummary;
 	}());
-	exports.SummaryStrategy = SummaryStrategy;
+	exports.ViewSummary = ViewSummary;
 
 
 /***/ },
@@ -868,7 +883,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    ValidationHandler.handleValidation = function (element, propertyPath, propertyObservable, bindingContext) {
 	        var validationGroup = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
-	        var validationOptions = binding_helper_1.BindingHelper.getValidationOptions(bindingContext);
+	        var viewOptions = binding_helper_1.BindingHelper.getViewOptions(bindingContext);
+	        var validationState = treacherous_view_1.ValidationState.unknown;
 	        bindingContext[binding_helper_1.BindingHelper.validationPropertyPathBindingName] = propertyPath;
 	        var strategy = treacherous_view_1.ElementHelper.getStrategyFrom(element) || binding_helper_1.BindingHelper.getViewStrategy(bindingContext);
 	        var propertyPathOverride = treacherous_view_1.ElementHelper.getPropertyRouteFrom(element);
@@ -883,15 +899,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            validationGroup.getPropertyError(propertyPath, true)
 	                .then(function (error) {
 	                if (!error) {
-	                    viewStrategy.propertyBecomeValid(element, propertyPath, null);
+	                    viewStrategy.propertyBecomeValid(element, propertyPath, validationState);
+	                    validationState = treacherous_view_1.ValidationState.valid;
 	                }
 	                else {
-	                    viewStrategy.propertyBecomeInvalid(element, error, propertyPath, null);
+	                    viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState);
+	                    validationState = treacherous_view_1.ValidationState.invalid;
 	                }
 	            });
 	        };
 	        propertyObservable.subscribe(getPropertyError);
-	        if (validationOptions.immediateErrors) {
+	        if (viewOptions.immediateErrors) {
 	            getPropertyError();
 	        }
 	    };
@@ -911,8 +929,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    BindingHelper.getValidationGroup = function (bindingContext) {
 	        return bindingContext[BindingHelper.validationGroup];
 	    };
-	    BindingHelper.getValidationOptions = function (bindingContext) {
-	        return bindingContext[BindingHelper.validationOptions];
+	    BindingHelper.getViewOptions = function (bindingContext) {
+	        return bindingContext[BindingHelper.viewOptions];
 	    };
 	    BindingHelper.getViewStrategy = function (bindingContext) {
 	        return bindingContext[BindingHelper.viewStrategy] || "inline";
@@ -960,7 +978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    BindingHelper.validationPropertyBindingName = "validationProperty";
 	    BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";
 	    BindingHelper.validationGroup = "validationGroup";
-	    BindingHelper.validationOptions = "validationOptions";
+	    BindingHelper.viewOptions = "viewOptions";
 	    BindingHelper.viewStrategy = "viewStrategy";
 	    return BindingHelper;
 	})();
@@ -980,7 +998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var strategy = treacherous_view_1.ElementHelper.getStrategyFrom(element) || "inline";
 	        var options = treacherous_view_1.ElementHelper.getOptionsFrom(element) || {};
 	        bindingContext[binding_helper_1.BindingHelper.validationGroup] = bindingOptions;
-	        bindingContext[binding_helper_1.BindingHelper.validationOptions] = options;
+	        bindingContext[binding_helper_1.BindingHelper.viewOptions] = options;
 	        bindingContext[binding_helper_1.BindingHelper.viewStrategy] = strategy;
 	    }
 	};
@@ -988,6 +1006,74 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ko = __webpack_require__(15);
+	var treacherous_1 = __webpack_require__(2);
+	var treacherous_view_1 = __webpack_require__(3);
+	var binding_helper_1 = __webpack_require__(25);
+	var viewSummary = new treacherous_view_1.ViewSummary();
+	ko.bindingHandlers["validation-summary"] = {
+	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        var validationGroupOrGroups = valueAccessor();
+	        if (!validationGroupOrGroups) {
+	            validationGroupOrGroups = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
+	        }
+	        var validationOptions = binding_helper_1.BindingHelper.getViewOptions(bindingContext);
+	        var isArray = typeof (validationGroupOrGroups) == "array";
+	        var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
+	        if (!isReactive) {
+	            console.warn("summary-for binding requires a reactive validation group");
+	            return;
+	        }
+	        viewSummary.setupContainer(element);
+	        var handleStateChange = function (eventArgs) {
+	            if (eventArgs.isValid) {
+	                viewSummary.propertyBecomeValid(element, eventArgs.property);
+	            }
+	            else {
+	                viewSummary.propertyBecomeInvalid(element, eventArgs.error, eventArgs.property);
+	            }
+	        };
+	        var runImmediateValidation = function (validationGroup) {
+	            validationGroup.getModelErrors()
+	                .then(function (errors) {
+	                Object.keys(errors).forEach(function (key) {
+	                    var eventArgs = new treacherous_1.PropertyStateChangedEvent(key, false, errors[key]);
+	                    handleStateChange(eventArgs);
+	                });
+	            });
+	        };
+	        if (isArray) {
+	            validationGroupOrGroups.forEach(function (validationGroup) {
+	                validationGroup.propertyStateChangedEvent.subscribe(handleStateChange);
+	                if (validationOptions.immediateErrors) {
+	                    runImmediateValidation(validationGroup);
+	                }
+	            });
+	        }
+	        else {
+	            validationGroupOrGroups.propertyStateChangedEvent.subscribe(handleStateChange);
+	            if (validationOptions.immediateErrors) {
+	                runImmediateValidation(validationGroupOrGroups);
+	            }
+	        }
+	        ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+	            if (isArray) {
+	                validationGroupOrGroups.forEach(function (validationGroup) {
+	                    validationGroup.propertyStateChangedEvent.unsubscribe(handleStateChange);
+	                });
+	            }
+	            else {
+	                validationGroupOrGroups.propertyStateChangedEvent.unsubscribe(handleStateChange);
+	            }
+	        });
+	    }
+	};
+
+
+/***/ },
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(15);
@@ -1006,7 +1092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(15);
@@ -1026,7 +1112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(15);
@@ -1046,7 +1132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ko = __webpack_require__(15);

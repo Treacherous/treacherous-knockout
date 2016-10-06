@@ -24,7 +24,19 @@
 </head>
 <body>
     <h2>Validate with nested objects and iterated elements</h2>
+    <section data-bind="validate-with: validationGroup, template: 'validation-content-template'">
+    </section>
+
+    <h2>Force validation errors to display on load</h2>
+    <section data-bind="validate-with: validationGroup, template: 'validation-content-template'" view-options="immediateErrors: true">
+    </section>
+
+    <h2>Show a validation summary</h2>
     <section data-bind="validate-with: validationGroup">
+        <div data-bind="validation-summary"></div>
+    </section>
+
+    <script id="validation-content-template" type="text/html">
         <div>
             <label>Some Number</label>
             <input data-bind="value: someNumber"/>
@@ -44,30 +56,7 @@
         </div>
         <!-- /ko -->
         <button data-bind="enabled-with: validationGroup">Enabled based upon validation state</button>
-    </section>
-
-    <h2>Force validation when everything loads</h2>
-    <section data-bind="validate-with: validationGroup" validation-options="immediateErrors: true">
-        <div>
-            <label>Some Number</label>
-            <input data-bind="value: someNumber"/>
-        </div>
-        <div>
-            <label>Some Text</label>
-            <input data-bind="value: someText"/>
-        </div>
-        <div>
-            <label>Some Nested Number</label>
-            <input data-bind="value: someNestedObject.someNumber"/>
-        </div>
-        <!-- ko foreach: someArray -->
-        <div>
-            <label data-bind="text: 'Some Array - Index '+ ($index() + 1)"></label>
-            <input data-bind="textInput: $rawData"/>
-        </div>
-        <!-- /ko -->
-        <button data-bind="enabled-with: validationGroup, click: doSomething">Enabled based upon validation state</button>
-    </section>
+    </script>
 
     <script type="text/javascript" src="libs/bluebird.js"></script>
     <script type="text/javascript" src="libs/knockout.js"></script>
@@ -82,8 +71,7 @@
             },
             someArray: ko.observableArray([
                 ko.observable(10), ko.observable(15), ko.observable(30)
-            ]),
-            doSomething: function() { console.log("HIT"); }
+            ])
         };
 
         var nestedRuleset = Treacherous.createRuleset()
