@@ -1,9 +1,9 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "dependencies": {
     "treacherous": "0.12.*",
-    "treacherous-view": "grofit/treacherous-view#prototype",
+    "treacherous-view": "^0.2.1",
     "knockout": "^3.4.0",
     "property-resolver": "0.0.*",
     "event-js": "0.1.*"

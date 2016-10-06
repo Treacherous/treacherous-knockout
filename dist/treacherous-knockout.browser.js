@@ -2004,9 +2004,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(56));
 	__export(__webpack_require__(57));
 	__export(__webpack_require__(52));
-	__export(__webpack_require__(58));
 	__export(__webpack_require__(55));
 	__export(__webpack_require__(53));
+	__export(__webpack_require__(58));
 	__export(__webpack_require__(59));
 	__export(__webpack_require__(60));
 
@@ -2165,10 +2165,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return element.getAttribute("validate-property");
 	    };
 	    ElementHelper.getStrategyFrom = function (element) {
-	        return element.getAttribute("validation-strategy");
+	        return element.getAttribute("view-strategy");
 	    };
 	    ElementHelper.getOptionsFrom = function (element) {
-	        var optionsLiteral = element.getAttribute("validation-options");
+	        var optionsLiteral = element.getAttribute("view-options");
 	        if (!optionsLiteral) {
 	            return;
 	        }
@@ -2255,7 +2255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	    }
 	    SummaryHandler.elementIdFormat = "summary-error-for-";
-	    SummaryHandler.errorClassName = "summary--error";
+	    SummaryHandler.errorClassName = "summary-error";
 	    SummaryHandler.containerClassName = "validation-summary-container";
 	    return SummaryHandler;
 	}());
@@ -2747,30 +2747,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            propertyPath = propertyName;
 	        }
 	        return propertyPath;
-	    };
-	    BindingHelper.handleElementError = function (element, isValid, error) {
-	        if (isValid) {
-	            ko["validation"]["validator"].handleValidElement(element);
-	        }
-	        else {
-	            ko["validation"]["validator"].handleErrorElement(element, error);
-	        }
-	    };
-	    BindingHelper.setupValidationListener = function (validationGroup, propertyPath, element, customHandler) {
-	        var _this = this;
-	        if (customHandler === void 0) { customHandler = null; }
-	        var predicate = function (x) { return x.property == propertyPath; };
-	        var handler;
-	        if (!customHandler) {
-	            handler = function (args) {
-	                _this.handleElementError(element, args.isValid, args.error);
-	            };
-	        }
-	        else {
-	            handler = customHandler;
-	        }
-	        var subscription = validationGroup.propertyStateChangedEvent.subscribe(handler, predicate);
-	        ko.utils.domNodeDisposal.addDisposeCallback(element, subscription);
 	    };
 	    BindingHelper.validationPropertyBindingName = "validationProperty";
 	    BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";

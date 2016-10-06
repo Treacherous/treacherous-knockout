@@ -39,27 +39,4 @@ export class BindingHelper
 
         return propertyPath;
     }
-
-    public static handleElementError(element: HTMLElement, isValid: boolean, error: string) {
-        if(isValid)
-        { ko["validation"]["validator"].handleValidElement(element); }
-        else
-        { ko["validation"]["validator"].handleErrorElement(element, error); }
-    }
-
-    public static setupValidationListener(validationGroup: IReactiveValidationGroup, propertyPath: string, element: HTMLElement, customHandler = null) {
-        var predicate = (x: PropertyStateChangedEvent) => { return x.property == propertyPath; };
-        var handler;
-
-        if(!customHandler) {
-            handler = (args: PropertyStateChangedEvent) => {
-                this.handleElementError(element, args.isValid, args.error);
-            };
-        }
-        else
-        { handler = customHandler; }
-
-        var subscription = validationGroup.propertyStateChangedEvent.subscribe(handler, predicate);
-        ko.utils.domNodeDisposal.addDisposeCallback(element, subscription);
-    }
 }

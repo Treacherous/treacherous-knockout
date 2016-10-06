@@ -9,6 +9,4 @@ export declare class BindingHelper {
     static getViewOptions(bindingContext: any): any;
     static getViewStrategy(bindingContext: any): any;
     static getCurrentPropertyPath(propertyName: string, bindingContext: any): string;
-    static handleElementError(element: HTMLElement, isValid: boolean, error: string): void;
-    static setupValidationListener(validationGroup: IReactiveValidationGroup, propertyPath: string, element: HTMLElement, customHandler?: any): void;
 }
