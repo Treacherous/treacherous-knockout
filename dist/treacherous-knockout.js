@@ -117,9 +117,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(9));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(5));
+	__export(__webpack_require__(11));
 	__export(__webpack_require__(8));
 	__export(__webpack_require__(6));
-	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(13));
 
@@ -393,8 +393,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.summaryHandler.removePropertyErrorElement(summaryContainerElement, propertyRoute);
 	    };
 	    ViewSummary.prototype.propertyBecomeInvalid = function (summaryContainerElement, error, propertyRoute) {
+	        var message = propertyRoute + " - " + error;
 	        this.summaryHandler.removePropertyErrorElement(summaryContainerElement, propertyRoute);
-	        this.summaryHandler.createPropertyErrorElement(error, summaryContainerElement, propertyRoute);
+	        this.summaryHandler.createPropertyErrorElement(message, summaryContainerElement, propertyRoute);
 	    };
 	    return ViewSummary;
 	}());
@@ -899,11 +900,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            validationGroup.getPropertyError(propertyPath, true)
 	                .then(function (error) {
 	                if (!error) {
-	                    viewStrategy.propertyBecomeValid(element, propertyPath, validationState);
+	                    viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
 	                    validationState = treacherous_view_1.ValidationState.valid;
 	                }
 	                else {
-	                    viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState);
+	                    viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
 	                    validationState = treacherous_view_1.ValidationState.invalid;
 	                }
 	            });

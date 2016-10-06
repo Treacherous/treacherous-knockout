@@ -24,12 +24,12 @@ export class ValidationHandler
                 .then(function(error){
                     if(!error)
                     {
-                        viewStrategy.propertyBecomeValid(element, propertyPath, validationState);
+                        viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
                         validationState = ValidationState.valid;
                     }
                     else
                     {
-                        viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState);
+                        viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
                         validationState = ValidationState.invalid;
                     }
                 });
