@@ -69,3 +69,5 @@ ko.bindingHandlers["validation-summary"] = {
         });
     }
 }
+
+export var validationSummaryBinding: void;

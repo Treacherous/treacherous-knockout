@@ -8,4 +8,4 @@ ko.bindingHandlers["show-error"] = {
     }
 };
 
-export var validatePropertyBinding: void;
+export var showErrorBinding: void;

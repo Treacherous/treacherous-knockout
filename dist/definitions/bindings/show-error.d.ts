@@ -1,1 +1,1 @@
-export declare var validatePropertyBinding: void;
+export declare var showErrorBinding: void;
