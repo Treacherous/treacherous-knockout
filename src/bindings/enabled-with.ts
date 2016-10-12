@@ -18,7 +18,7 @@ ko.bindingHandlers["enabled-with"] = {
         var isReactive = !!validationGroupOrGroups.modelStateChangedEvent;
 
         if(!isReactive) {
-            console.warn("enabled-with binding requires a reactive validation group");
+            console.log("enabled-with binding requires a reactive validation group", element);
             return;
         }
 

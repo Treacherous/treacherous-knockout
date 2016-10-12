@@ -50,12 +50,12 @@ register themselves for notifications if available.
 
 #### Basic Usage
 ```html
-<section data-bind="validateWith: someValidationGroup">...</section>
+<section data-bind="validate-with: someValidationGroup">...</section>
 ```
 
 #### Advanced Usage
 ```html
-<section data-bind="validateWith: someValidationGroup" view-options="immediateErrors: true">...</section>
+<section data-bind="validate-with: someValidationGroup" view-options="immediateErrors: true">...</section>
 ```
 
 As treacherous is made to be cross platform/framework it generally uses attributes for configuration
@@ -107,7 +107,7 @@ This binding populates the element with a validation summary showing all current
 <div data-bind="validation-summary: [ validationGroupOne, validationGroupTwo ]"></div>
 ```
 
-You can use this binding within the scope of a `validateWith` binding, or explicitly pass it one or many
+You can use this binding within the scope of a `validate-with` binding, or explicitly pass it one or many
 validation groups, this way if you have multiple validators on the page you can have them all be output 
 in one place.
 

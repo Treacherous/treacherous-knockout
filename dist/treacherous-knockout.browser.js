@@ -63,10 +63,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(69));
 	__export(__webpack_require__(67));
 	__export(__webpack_require__(70));
+	__export(__webpack_require__(68));
 	__export(__webpack_require__(63));
 	__export(__webpack_require__(64));
 	__export(__webpack_require__(61));
-	__export(__webpack_require__(68));
 	__export(__webpack_require__(71));
 	__export(__webpack_require__(72));
 	__export(__webpack_require__(73));
@@ -2629,7 +2629,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var isArray = typeof (validationGroupOrGroups) == "array";
 	        var isReactive = !!validationGroupOrGroups.modelStateChangedEvent;
 	        if (!isReactive) {
-	            console.warn("enabled-with binding requires a reactive validation group");
+	            console.log("enabled-with binding requires a reactive validation group", element);
 	            return;
 	        }
 	        element.disabled = true;
@@ -2662,9 +2662,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var ko = __webpack_require__(62);
 	var validation_handler_1 = __webpack_require__(67);
+	var treacherous_view_1 = __webpack_require__(50);
 	ko.bindingHandlers["show-error"] = {
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var propertyPath = valueAccessor();
+	        if (!propertyPath) {
+	            propertyPath = treacherous_view_1.ElementHelper.getPropertyRouteFrom(element);
+	        }
+	        if (!propertyPath) {
+	            console.log("no valid property path in scope on element", element);
+	            return;
+	        }
 	        validation_handler_1.ValidationHandler.handleValidation(element, propertyPath, valueAccessor(), bindingContext);
 	    }
 	};
@@ -2693,20 +2701,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	            propertyPath = propertyPathOverride;
 	        }
 	        var viewStrategy = treacherous_view_1.viewStrategyRegistry.getStrategyNamed(strategy);
+	        var handlePossibleError = function (error) {
+	            if (!error) {
+	                viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
+	                validationState = treacherous_view_1.ValidationState.valid;
+	            }
+	            else {
+	                viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
+	                validationState = treacherous_view_1.ValidationState.invalid;
+	            }
+	        };
 	        var getPropertyError = function () {
 	            validationGroup.getPropertyError(propertyPath, true)
-	                .then(function (error) {
-	                if (!error) {
-	                    viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
-	                    validationState = treacherous_view_1.ValidationState.valid;
-	                }
-	                else {
-	                    viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
-	                    validationState = treacherous_view_1.ValidationState.invalid;
-	                }
-	            });
+	                .then(handlePossibleError);
 	        };
-	        propertyObservable.subscribe(getPropertyError);
+	        // TODO: need to clean up afterwards on subs
+	        if (propertyObservable) {
+	            propertyObservable.subscribe(getPropertyError);
+	        }
+	        else if (validationGroup.propertyStateChangedEvent) {
+	            validationGroup.propertyStateChangedEvent.subscribe(function (args) {
+	                handlePossibleError(args.error);
+	            });
+	        }
+	        else {
+	            console.log("unable to subscribe to changes, no valid observable or reactive validation group", element);
+	        }
 	        if (viewOptions.immediateErrors) {
 	            getPropertyError();
 	        }
@@ -2797,7 +2817,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var isArray = typeof (validationGroupOrGroups) == "array";
 	        var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
 	        if (!isReactive) {
-	            console.warn("summary-for binding requires a reactive validation group");
+	            console.log("summary-for binding requires a reactive validation group", element);
 	            return;
 	        }
 	        viewSummary.setupContainer(element);

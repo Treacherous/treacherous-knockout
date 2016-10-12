@@ -16,7 +16,7 @@ ko.bindingHandlers["validation-summary"] = {
         var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
 
         if(!isReactive) {
-            console.warn("summary-for binding requires a reactive validation group");
+            console.log("summary-for binding requires a reactive validation group", element);
             return;
         }
 

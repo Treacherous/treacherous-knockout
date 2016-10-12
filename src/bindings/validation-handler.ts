@@ -1,5 +1,6 @@
 import {BindingHelper} from "../helpers/binding-helper";
 import {viewStrategyRegistry, ElementHelper, ValidationState} from "treacherous-view";
+import {PropertyStateChangedEvent} from "treacherous";
 
 export class ValidationHandler
 {
@@ -19,23 +20,37 @@ export class ValidationHandler
         { propertyPath = propertyPathOverride; }
 
         var viewStrategy = viewStrategyRegistry.getStrategyNamed(strategy);
+
+
+        var handlePossibleError = (error) => {
+            if(!error)
+            {
+                viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
+                validationState = ValidationState.valid;
+            }
+            else
+            {
+                viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
+                validationState = ValidationState.invalid;
+            }
+        };
+
         var getPropertyError = () => {
             validationGroup.getPropertyError(propertyPath, true)
-                .then(function(error){
-                    if(!error)
-                    {
-                        viewStrategy.propertyBecomeValid(element, propertyPath, validationState, viewOptions);
-                        validationState = ValidationState.valid;
-                    }
-                    else
-                    {
-                        viewStrategy.propertyBecomeInvalid(element, error, propertyPath, validationState, viewOptions);
-                        validationState = ValidationState.invalid;
-                    }
-                });
-        }
+                .then(handlePossibleError);
+        };
 
-        propertyObservable.subscribe(getPropertyError);
+        // TODO: need to clean up afterwards on subs
+        if(propertyObservable) {
+            propertyObservable.subscribe(getPropertyError);
+        }
+        else if(validationGroup.propertyStateChangedEvent){
+            validationGroup.propertyStateChangedEvent.subscribe((args: PropertyStateChangedEvent) => {
+                handlePossibleError(args.error);
+            });
+        }
+        else
+        { console.log("unable to subscribe to changes, no valid observable or reactive validation group", element); }
 
         if(viewOptions.immediateErrors)
         { getPropertyError(); }

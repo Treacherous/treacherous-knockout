@@ -36,6 +36,12 @@
         <div data-bind="validation-summary"></div>
     </section>
 
+    <h2>Hint validation properties</h2>
+    <section data-bind="validate-with: validationGroup" view-options="immediateErrors: true">
+        <label>Some Explicit Validation Error For someNestedObject.someNumber</label>
+        <div data-bind="show-error" validate-property="someNestedObject.someNumber"></div>
+    </section>
+
     <script id="validation-content-template" type="text/html">
         <div>
             <label>Some Number</label>

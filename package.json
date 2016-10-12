@@ -1,6 +1,6 @@
 {
   "name": "treacherous-knockout",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "dependencies": {
     "treacherous": "0.12.*",
     "treacherous-view": "^0.2.1",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "gulp": "3.9.0",
-    "gulp-typescript": "2.10.0",
+    "gulp-typescript": "^3.0.*",
     "gulp-es6-exporter": "^0.0.5",
     "gulp-uglify": "latest",
     "gulp-rename": "latest",
@@ -45,6 +45,7 @@
     "karma-chai-as-promised": "0.1.2",
     "chai-spies": "latest",
     "karma-chai-spies": "latest",
-    "bluebird": "latest"
+    "bluebird": "latest",
+    "typescript": "^2.0.*"
   }
 }
