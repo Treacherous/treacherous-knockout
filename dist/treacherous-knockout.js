@@ -54,6 +54,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
@@ -77,6 +78,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
@@ -406,6 +408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var KnockoutPropertyResolver = (function () {
 	    function KnockoutPropertyResolver() {
@@ -507,7 +510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return propertyRoute;
 	    };
 	    return KnockoutPropertyResolver;
-	})();
+	}());
 	exports.KnockoutPropertyResolver = KnockoutPropertyResolver;
 
 
@@ -521,6 +524,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var knockout_model_watcher_1 = __webpack_require__(17);
 	var KnockoutModelWatcherFactory = (function () {
 	    function KnockoutModelWatcherFactory(propertyResolver) {
@@ -530,7 +534,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return new knockout_model_watcher_1.KnockoutModelWatcher(this.propertyResolver);
 	    };
 	    return KnockoutModelWatcherFactory;
-	})();
+	}());
 	exports.KnockoutModelWatcherFactory = KnockoutModelWatcherFactory;
 
 
@@ -538,6 +542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var treacherous_1 = __webpack_require__(2);
 	var property_resolver_1 = __webpack_require__(18);
 	var event_js_1 = __webpack_require__(19);
@@ -716,7 +721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.onPropertyChanged = new event_js_1.EventHandler(this);
 	    }
 	    return KnockoutModelWatcher;
-	})();
+	}());
 	exports.KnockoutModelWatcher = KnockoutModelWatcher;
 
 
@@ -814,6 +819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var pollModelErrors = function (validationGroup, callback) {
 	    return setTimeout(function () {
@@ -863,6 +869,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var validation_handler_1 = __webpack_require__(24);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -885,6 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var binding_helper_1 = __webpack_require__(25);
 	var treacherous_view_1 = __webpack_require__(3);
 	var ValidationHandler = (function () {
@@ -915,20 +923,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        };
 	        var getPropertyError = function () {
-	            validationGroup.getPropertyError(propertyPath, true)
-	                .then(handlePossibleError);
+	            validationGroup.getPropertyError(propertyPath, true);
 	        };
+	        var handlePropertyStateChange = function (args) {
+	            handlePossibleError(args.error);
+	        };
+	        var propertyStateChangePredicate = function (args) {
+	            return args.property == propertyPath;
+	        };
+	        validationGroup.propertyStateChangedEvent.subscribe(handlePropertyStateChange, propertyStateChangePredicate);
 	        // TODO: need to clean up afterwards on subs
 	        if (propertyObservable) {
 	            propertyObservable.subscribe(getPropertyError);
-	        }
-	        else if (validationGroup.propertyStateChangedEvent) {
-	            validationGroup.propertyStateChangedEvent.subscribe(function (args) {
-	                handlePossibleError(args.error);
-	            });
-	        }
-	        else {
-	            console.log("unable to subscribe to changes, no valid observable or reactive validation group", element);
 	        }
 	        if (viewOptions.immediateErrors) {
 	            getPropertyError();
@@ -936,7 +942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    ;
 	    return ValidationHandler;
-	})();
+	}());
 	exports.ValidationHandler = ValidationHandler;
 
 
@@ -944,6 +950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 25 */
 /***/ function(module, exports) {
 
+	"use strict";
 	var BindingHelper = (function () {
 	    function BindingHelper() {
 	    }
@@ -978,7 +985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    BindingHelper.viewOptions = "viewOptions";
 	    BindingHelper.viewStrategy = "viewStrategy";
 	    return BindingHelper;
-	})();
+	}());
 	exports.BindingHelper = BindingHelper;
 
 
@@ -986,6 +993,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -1005,6 +1013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var treacherous_1 = __webpack_require__(2);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -1073,6 +1082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	ko.bindingHandlers.foreach.preprocess = function (value, name, addBinding) {
@@ -1092,6 +1102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var validation_handler_1 = __webpack_require__(24);
@@ -1112,6 +1123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var validation_handler_1 = __webpack_require__(24);
@@ -1132,6 +1144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	ko.bindingHandlers.with.preprocess = function (value, name, addBinding) {

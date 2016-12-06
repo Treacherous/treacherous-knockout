@@ -36,21 +36,23 @@ export class ValidationHandler
         };
 
         var getPropertyError = () => {
-            validationGroup.getPropertyError(propertyPath, true)
-                .then(handlePossibleError);
+            validationGroup.getPropertyError(propertyPath, true);
         };
+
+        var handlePropertyStateChange = (args: PropertyStateChangedEvent) => {
+            handlePossibleError(args.error);
+        };
+
+        var propertyStateChangePredicate = (args: PropertyStateChangedEvent) => {
+            return args.property == propertyPath;
+        };
+
+        validationGroup.propertyStateChangedEvent.subscribe(handlePropertyStateChange, propertyStateChangePredicate);
 
         // TODO: need to clean up afterwards on subs
         if(propertyObservable) {
             propertyObservable.subscribe(getPropertyError);
         }
-        else if(validationGroup.propertyStateChangedEvent){
-            validationGroup.propertyStateChangedEvent.subscribe((args: PropertyStateChangedEvent) => {
-                handlePossibleError(args.error);
-            });
-        }
-        else
-        { console.log("unable to subscribe to changes, no valid observable or reactive validation group", element); }
 
         if(viewOptions.immediateErrors)
         { getPropertyError(); }
