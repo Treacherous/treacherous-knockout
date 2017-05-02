@@ -9,6 +9,7 @@ gulp.task('compile', ["clean", "generate-exports"], function() {
             declaration: true,
             module: "commonjs",
             target: "es5",
+            lib: ["es2016", "dom"],
             moduleResolution: "node",
             declarationFiles: true
         }));

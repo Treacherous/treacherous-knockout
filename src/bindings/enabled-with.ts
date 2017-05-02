@@ -1,26 +1,10 @@
 import * as ko from "knockout";
-import {IValidationGroup, IReactiveValidationGroup} from "treacherous";
-
-var pollModelErrors = (validationGroup: IValidationGroup, callback) => {
-    return setTimeout(() => {
-        validationGroup.getModelErrors()
-            .then((errors) => {
-                var hasErrors = (Object.keys(errors).length > 0);
-                if(hasErrors){ callback(hasErrors); }
-            });
-    }, 500)
-};
+import {IValidationGroup} from "treacherous";
 
 ko.bindingHandlers["enabled-with"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var validationGroupOrGroups = valueAccessor();
-        var isArray = typeof(validationGroupOrGroups) == "array";
-        var isReactive = !!validationGroupOrGroups.modelStateChangedEvent;
-
-        if(!isReactive) {
-            console.log("enabled-with binding requires a reactive validation group", element);
-            return;
-        }
+        var isArray = Array.isArray(validationGroupOrGroups);
 
         element.disabled = true;
 
@@ -28,7 +12,7 @@ ko.bindingHandlers["enabled-with"] = {
 
         if(isArray)
         {
-            validationGroupOrGroups.forEach((validationGroup: IReactiveValidationGroup) => {
+            validationGroupOrGroups.forEach((validationGroup: IValidationGroup) => {
                 validationGroup.modelStateChangedEvent.subscribe(handleStateChange);
             });
         }
@@ -38,7 +22,7 @@ ko.bindingHandlers["enabled-with"] = {
         ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
             if(isArray)
             {
-                validationGroupOrGroups.forEach((validationGroup: IReactiveValidationGroup) => {
+                validationGroupOrGroups.forEach((validationGroup: IValidationGroup) => {
                     validationGroup.modelStateChangedEvent.unsubscribe(handleStateChange);
                 });
             }

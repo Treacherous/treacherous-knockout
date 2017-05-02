@@ -12,7 +12,7 @@ ko.bindingHandlers["validation-summary"] = {
 
         var validationOptions = <IViewOptions>BindingHelper.getViewOptions(bindingContext);
 
-        var isArray = typeof(validationGroupOrGroups) == "array";
+        var isArray = Array.isArray(validationGroupOrGroups);
         var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
 
         if(!isReactive) {

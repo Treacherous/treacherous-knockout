@@ -52,12 +52,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
+	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(1));
 	__export(__webpack_require__(22));
 	__export(__webpack_require__(23));
@@ -74,24 +75,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(31));
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
+	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(2));
 	__export(__webpack_require__(3));
-	var treacherous_2 = __webpack_require__(2);
+	var treacherous_1 = __webpack_require__(2);
 	var knockout_property_resolver_1 = __webpack_require__(14);
 	var knockout_model_watcher_factory_1 = __webpack_require__(16);
 	var knockoutPropertyResolver = new knockout_property_resolver_1.KnockoutPropertyResolver();
 	var knockoutModelWatcherFactory = new knockout_model_watcher_factory_1.KnockoutModelWatcherFactory(knockoutPropertyResolver);
-	var modelResolverFactory = new treacherous_2.ModelResolverFactory(knockoutPropertyResolver);
+	var modelResolverFactory = new treacherous_1.ModelResolverFactory(knockoutPropertyResolver);
 	function createGroup() {
-	    return treacherous_2.createGroup()
+	    return treacherous_1.createGroup()
 	        .andValidateOnStart()
 	        .asReactiveGroup()
 	        .withModelResolverFactory(modelResolverFactory)
@@ -100,20 +102,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.createGroup = createGroup;
 
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
+	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(4));
 	__export(__webpack_require__(7));
 	__export(__webpack_require__(9));
@@ -126,22 +129,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(13));
 
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var view_strategy_registry_1 = __webpack_require__(5);
 	var inline_strategy_1 = __webpack_require__(6);
 	exports.viewStrategyRegistry = new view_strategy_registry_1.ViewStrategyRegistry();
 	exports.viewStrategyRegistry.registerStrategy(new inline_strategy_1.InlineStrategy());
 
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ViewStrategyRegistry = (function () {
 	    function ViewStrategyRegistry() {
 	        var _this = this;
@@ -156,11 +161,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ViewStrategyRegistry = ViewStrategyRegistry;
 
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var class_helper_1 = __webpack_require__(7);
 	var inline_handler_1 = __webpack_require__(8);
 	var InlineStrategy = (function () {
@@ -184,47 +190,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.InlineStrategy = InlineStrategy;
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ClassHelper = (function () {
 	    function ClassHelper() {
 	    }
-	    ClassHelper.hasClass = function (element, className) {
-	        if (element.classList) {
-	            return element.classList.contains(className);
-	        }
-	        return !!element.className.match(new RegExp("(\\s|^)" + className + "(\\s|$)"));
-	    };
-	    ClassHelper.addClass = function (element, className) {
-	        if (element.classList) {
-	            element.classList.add(className);
-	        }
-	        else if (!ClassHelper.hasClass(element, className)) {
-	            element.errorClassName += " " + className;
-	        }
-	    };
-	    ClassHelper.removeClass = function (element, className) {
-	        if (element.classList) {
-	            element.classList.remove(className);
-	        }
-	        else if (ClassHelper.hasClass(element, className)) {
-	            var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
-	            element.errorClassName = element.className.replace(reg, ' ');
-	        }
-	    };
 	    return ClassHelper;
 	}());
+	ClassHelper.hasClass = function (element, className) {
+	    if (element.classList) {
+	        return element.classList.contains(className);
+	    }
+	    return !!element.className.match(new RegExp("(\\s|^)" + className + "(\\s|$)"));
+	};
+	ClassHelper.addClass = function (element, className) {
+	    if (element.classList) {
+	        element.classList.add(className);
+	    }
+	    else if (!ClassHelper.hasClass(element, className)) {
+	        element.errorClassName += " " + className;
+	    }
+	};
+	ClassHelper.removeClass = function (element, className) {
+	    if (element.classList) {
+	        element.classList.remove(className);
+	    }
+	    else if (ClassHelper.hasClass(element, className)) {
+	        var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+	        element.errorClassName = element.className.replace(reg, ' ');
+	    }
+	};
 	exports.ClassHelper = ClassHelper;
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var InlineHandler = (function () {
 	    function InlineHandler() {
 	        var _this = this;
@@ -261,17 +269,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        };
 	    }
-	    InlineHandler.currentCount = 1;
 	    return InlineHandler;
 	}());
+	InlineHandler.currentCount = 1;
 	exports.InlineHandler = InlineHandler;
 
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var js_literal_helper_1 = __webpack_require__(10);
 	var ElementHelper = (function () {
 	    function ElementHelper() {
@@ -294,11 +303,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ElementHelper = ElementHelper;
 
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var JsLiteralHelper = (function () {
 	    function JsLiteralHelper() {
 	    }
@@ -314,30 +324,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return jsonObject || {};
 	    };
-	    JsLiteralHelper.jsLiteralRegex = /({|,)(?:\s*)(?:')?([A-Za-z_$\.][A-Za-z0-9_ \-\.$]*)(?:')?(?:\s*):/g;
 	    return JsLiteralHelper;
 	}());
+	JsLiteralHelper.jsLiteralRegex = /({|,)(?:\s*)(?:')?([A-Za-z_$\.][A-Za-z0-9_ \-\.$]*)(?:')?(?:\s*):/g;
 	exports.JsLiteralHelper = JsLiteralHelper;
 
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var ValidationState;
 	(function (ValidationState) {
 	    ValidationState[ValidationState["unknown"] = 0] = "unknown";
 	    ValidationState[ValidationState["valid"] = 1] = "valid";
 	    ValidationState[ValidationState["invalid"] = 2] = "invalid";
-	})(exports.ValidationState || (exports.ValidationState = {}));
-	var ValidationState = exports.ValidationState;
+	})(ValidationState = exports.ValidationState || (exports.ValidationState = {}));
 
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var class_helper_1 = __webpack_require__(7);
 	var SummaryHandler = (function () {
 	    function SummaryHandler() {
@@ -369,19 +381,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        };
 	    }
-	    SummaryHandler.elementIdFormat = "summary-error-for-";
-	    SummaryHandler.errorClassName = "summary-error";
-	    SummaryHandler.containerClassName = "validation-summary-container";
 	    return SummaryHandler;
 	}());
+	SummaryHandler.elementIdFormat = "summary-error-for-";
+	SummaryHandler.errorClassName = "summary-error";
+	SummaryHandler.containerClassName = "validation-summary-container";
 	exports.SummaryHandler = SummaryHandler;
 
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var summary_handler_1 = __webpack_require__(12);
 	var ViewSummary = (function () {
 	    function ViewSummary(summaryHandler) {
@@ -404,11 +417,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ViewSummary = ViewSummary;
 
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var KnockoutPropertyResolver = (function () {
 	    function KnockoutPropertyResolver() {
@@ -514,17 +528,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.KnockoutPropertyResolver = KnockoutPropertyResolver;
 
 
-/***/ },
+/***/ }),
 /* 15 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_15__;
 
-/***/ },
+/***/ }),
 /* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var knockout_model_watcher_1 = __webpack_require__(17);
 	var KnockoutModelWatcherFactory = (function () {
 	    function KnockoutModelWatcherFactory(propertyResolver) {
@@ -538,19 +553,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.KnockoutModelWatcherFactory = KnockoutModelWatcherFactory;
 
 
-/***/ },
+/***/ }),
 /* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var treacherous_1 = __webpack_require__(2);
 	var property_resolver_1 = __webpack_require__(18);
 	var event_js_1 = __webpack_require__(19);
 	var ko = __webpack_require__(15);
 	var KnockoutModelWatcher = (function () {
 	    function KnockoutModelWatcher(propertyResolver) {
-	        var _this = this;
 	        if (propertyResolver === void 0) { propertyResolver = new property_resolver_1.PropertyResolver(); }
+	        var _this = this;
 	        this.propertyResolver = propertyResolver;
 	        this.watchCache = [];
 	        this.watchCacheKeys = [];
@@ -725,15 +741,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.KnockoutModelWatcher = KnockoutModelWatcher;
 
 
-/***/ },
+/***/ }),
 /* 18 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_18__;
 
-/***/ },
+/***/ }),
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* This is an auto-generated file by gulp-es6-exporter */
 	function __export(m) {
@@ -743,9 +759,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(21));
 
 
-/***/ },
+/***/ }),
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var event_listener_1 = __webpack_require__(21);
 	var EventHandler = (function () {
@@ -801,9 +817,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.EventHandler = EventHandler;
 
 
-/***/ },
+/***/ }),
 /* 21 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	var EventListener = (function () {
 	    function EventListener(callback, predicate) {
@@ -815,32 +831,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.EventListener = EventListener;
 
 
-/***/ },
+/***/ }),
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
-	var pollModelErrors = function (validationGroup, callback) {
-	    return setTimeout(function () {
-	        validationGroup.getModelErrors()
-	            .then(function (errors) {
-	            var hasErrors = (Object.keys(errors).length > 0);
-	            if (hasErrors) {
-	                callback(hasErrors);
-	            }
-	        });
-	    }, 500);
-	};
 	ko.bindingHandlers["enabled-with"] = {
 	    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 	        var validationGroupOrGroups = valueAccessor();
-	        var isArray = typeof (validationGroupOrGroups) == "array";
-	        var isReactive = !!validationGroupOrGroups.modelStateChangedEvent;
-	        if (!isReactive) {
-	            console.log("enabled-with binding requires a reactive validation group", element);
-	            return;
-	        }
+	        var isArray = Array.isArray(validationGroupOrGroups);
 	        element.disabled = true;
 	        var handleStateChange = function (eventArgs) { element.disabled = !eventArgs.isValid; };
 	        if (isArray) {
@@ -865,11 +866,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 23 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var validation_handler_1 = __webpack_require__(24);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -888,11 +890,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 24 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var binding_helper_1 = __webpack_require__(25);
 	var treacherous_view_1 = __webpack_require__(3);
 	var ValidationHandler = (function () {
@@ -946,11 +949,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ValidationHandler = ValidationHandler;
 
 
-/***/ },
+/***/ }),
 /* 25 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var BindingHelper = (function () {
 	    function BindingHelper() {
 	    }
@@ -979,21 +983,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return propertyPath;
 	    };
-	    BindingHelper.validationPropertyBindingName = "validationProperty";
-	    BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";
-	    BindingHelper.validationGroup = "validationGroup";
-	    BindingHelper.viewOptions = "viewOptions";
-	    BindingHelper.viewStrategy = "viewStrategy";
 	    return BindingHelper;
 	}());
+	BindingHelper.validationPropertyBindingName = "validationProperty";
+	BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";
+	BindingHelper.validationGroup = "validationGroup";
+	BindingHelper.viewOptions = "viewOptions";
+	BindingHelper.viewStrategy = "viewStrategy";
 	exports.BindingHelper = BindingHelper;
 
 
-/***/ },
+/***/ }),
 /* 26 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -1009,11 +1014,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 27 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var treacherous_1 = __webpack_require__(2);
 	var treacherous_view_1 = __webpack_require__(3);
@@ -1026,7 +1032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            validationGroupOrGroups = binding_helper_1.BindingHelper.getValidationGroup(bindingContext);
 	        }
 	        var validationOptions = binding_helper_1.BindingHelper.getViewOptions(bindingContext);
-	        var isArray = typeof (validationGroupOrGroups) == "array";
+	        var isArray = Array.isArray(validationGroupOrGroups);
 	        var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
 	        if (!isReactive) {
 	            console.log("summary-for binding requires a reactive validation group", element);
@@ -1078,11 +1084,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	ko.bindingHandlers.foreach.preprocess = function (value, name, addBinding) {
@@ -1098,11 +1105,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 29 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var validation_handler_1 = __webpack_require__(24);
@@ -1119,11 +1127,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 30 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	var validation_handler_1 = __webpack_require__(24);
@@ -1140,11 +1149,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 31 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ko = __webpack_require__(15);
 	var binding_helper_1 = __webpack_require__(25);
 	ko.bindingHandlers.with.preprocess = function (value, name, addBinding) {
@@ -1160,7 +1170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
