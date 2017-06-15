@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import {IReactiveValidationGroup, PropertyStateChangedEvent} from "treacherous";
+import {IReactiveValidationGroup, IValidationGroup, PropertyStateChangedEvent} from "treacherous";
 import {ViewSummary, IViewOptions} from "treacherous-view";
 import {BindingHelper} from "../helpers/binding-helper";
 
@@ -15,6 +15,20 @@ ko.bindingHandlers["validation-summary"] = {
         var isArray = Array.isArray(validationGroupOrGroups);
         var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
 
+        var getDisplayName = (propertyRoute) => {
+            if(!isArray)
+            { return (<IValidationGroup>validationGroupOrGroups).getPropertyDisplayName(propertyRoute); }
+
+            let finalName = propertyRoute;
+            validationGroupOrGroups.forEach((validationGroup) => {
+               let returnedName = validationGroup.getPropertyDisplayName(propertyRoute);
+               if(returnedName != propertyRoute)
+               { finalName = returnedName; }
+            });
+
+            return finalName;
+        };
+
         if(!isReactive) {
             console.log("summary-for binding requires a reactive validation group", element);
             return;
@@ -23,10 +37,11 @@ ko.bindingHandlers["validation-summary"] = {
         viewSummary.setupContainer(element);
 
         var handleStateChange = (eventArgs: PropertyStateChangedEvent) => {
+            var displayName = getDisplayName(eventArgs.property);
             if(eventArgs.isValid)
-            { viewSummary.propertyBecomeValid(element, eventArgs.property); }
+            { viewSummary.propertyBecomeValid(element, displayName); }
             else
-            { viewSummary.propertyBecomeInvalid(element, eventArgs.error, eventArgs.property); }
+            { viewSummary.propertyBecomeInvalid(element, eventArgs.error, displayName); }
         };
 
         var runImmediateValidation = (validationGroup) => {

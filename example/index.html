@@ -88,6 +88,7 @@
         var ruleset = Treacherous.createRuleset()
                 .forProperty("someNumber")
                     .addRule("maxValue", 20)
+                    .withDisplayName("Some Custom Property Name")
                 .forProperty("someText")
                     .addRule("required")
                     .addRule("minLength", 3)

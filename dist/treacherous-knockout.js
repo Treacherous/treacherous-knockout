@@ -122,9 +122,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(9));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(5));
-	__export(__webpack_require__(11));
 	__export(__webpack_require__(8));
 	__export(__webpack_require__(6));
+	__export(__webpack_require__(11));
 	__export(__webpack_require__(12));
 	__export(__webpack_require__(13));
 
@@ -1034,17 +1034,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var validationOptions = binding_helper_1.BindingHelper.getViewOptions(bindingContext);
 	        var isArray = Array.isArray(validationGroupOrGroups);
 	        var isReactive = !!validationGroupOrGroups.propertyStateChangedEvent;
+	        var getDisplayName = function (propertyRoute) {
+	            if (!isArray) {
+	                return validationGroupOrGroups.getPropertyDisplayName(propertyRoute);
+	            }
+	            var finalName = propertyRoute;
+	            validationGroupOrGroups.forEach(function (validationGroup) {
+	                var returnedName = validationGroup.getPropertyDisplayName(propertyRoute);
+	                if (returnedName != propertyRoute) {
+	                    finalName = returnedName;
+	                }
+	            });
+	            return finalName;
+	        };
 	        if (!isReactive) {
 	            console.log("summary-for binding requires a reactive validation group", element);
 	            return;
 	        }
 	        viewSummary.setupContainer(element);
 	        var handleStateChange = function (eventArgs) {
+	            var displayName = getDisplayName(eventArgs.property);
 	            if (eventArgs.isValid) {
-	                viewSummary.propertyBecomeValid(element, eventArgs.property);
+	                viewSummary.propertyBecomeValid(element, displayName);
 	            }
 	            else {
-	                viewSummary.propertyBecomeInvalid(element, eventArgs.error, eventArgs.property);
+	                viewSummary.propertyBecomeInvalid(element, eventArgs.error, displayName);
 	            }
 	        };
 	        var runImmediateValidation = function (validationGroup) {
