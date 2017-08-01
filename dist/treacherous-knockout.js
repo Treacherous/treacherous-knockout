@@ -983,13 +983,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return propertyPath;
 	    };
+	    BindingHelper.validationPropertyBindingName = "validationProperty";
+	    BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";
+	    BindingHelper.validationGroup = "validationGroup";
+	    BindingHelper.viewOptions = "viewOptions";
+	    BindingHelper.viewStrategy = "viewStrategy";
 	    return BindingHelper;
 	}());
-	BindingHelper.validationPropertyBindingName = "validationProperty";
-	BindingHelper.validationPropertyPathBindingName = "validationPropertyPath";
-	BindingHelper.validationGroup = "validationGroup";
-	BindingHelper.viewOptions = "viewOptions";
-	BindingHelper.viewStrategy = "viewStrategy";
 	exports.BindingHelper = BindingHelper;
 
 

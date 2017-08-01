@@ -1,5 +1,6 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {use, expect, assert, spy} from "chai";
+import {createRuleset, KnockoutModelWatcher} from "../../src/index";
+import * as spies from "chai-spies";
 
 describe('Knockout Model Watcher', function () {
 
@@ -12,7 +13,7 @@ describe('Knockout Model Watcher', function () {
             }
         };
 
-        var ruleset = Treacherous.createRuleset()
+        var ruleset = createRuleset()
             .forProperty("foo")
                 .addRule("required", true)
             .forProperty("bar")
@@ -20,7 +21,7 @@ describe('Knockout Model Watcher', function () {
                 .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new Treacherous.KnockoutModelWatcher();
+        var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
         var spySubscription = chai.spy(function(eventArgs){});
 
@@ -47,17 +48,17 @@ describe('Knockout Model Watcher', function () {
             ]
         };
 
-        var nestedRuleset = Treacherous.createRuleset()
+        var nestedRuleset = createRuleset()
             .forProperty("val")
             .addRule("maxValue", 30)
             .build();
 
-        var ruleset = Treacherous.createRuleset()
+        var ruleset = createRuleset()
             .forProperty("bar")
             .addRulesetForEach(nestedRuleset)
             .build();
 
-        var modelWatcher = new Treacherous.KnockoutModelWatcher();
+        var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
         var spySubscription = chai.spy(function(eventArgs){});
 
@@ -78,7 +79,7 @@ describe('Knockout Model Watcher', function () {
             bar: [ 10, 20 ]
         };
 
-        var ruleset = Treacherous.createRuleset()
+        var ruleset = createRuleset()
             .forProperty("foo")
             .addRule("required", true)
             .forProperty("bar")
@@ -86,17 +87,17 @@ describe('Knockout Model Watcher', function () {
             .addRuleForEach("maxValue", 20)
             .build();
 
-        var modelWatcher = new Treacherous.KnockoutModelWatcher();
+        var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
         var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
-        console.log("watcher before", modelWatcher.watchCache);
+        console.log("watcher before", modelWatcher["watchCache"]);
 
         dummyModel.bar.push(30);
 
-        console.log("watcher after", modelWatcher.watchCache);
+        console.log("watcher after", modelWatcher["watchCache"]);
 
         setTimeout(function(){
             expect(spySubscription).to.have.been.called.exactly(2);
@@ -117,27 +118,27 @@ describe('Knockout Model Watcher', function () {
             }
         };
 
-        var woopRuleset = Treacherous.createRuleset()
+        var woopRuleset = createRuleset()
             .forProperty("woop")
             .addRule("maxValue", 10)
             .build();
 
-        var testRuleset = Treacherous.createRuleset()
+        var testRuleset = createRuleset()
             .forProperty("test")
             .addRuleset(woopRuleset)
             .build();
 
-        var ruleset = Treacherous.createRuleset()
+        var ruleset = createRuleset()
             .forProperty("blah")
             .addRuleset(testRuleset)
             .build();
 
-        var modelWatcher = new Treacherous.KnockoutModelWatcher();
+        var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
 
-        expect(modelWatcher.watchCache.length).to.equal(1);
-        expect(modelWatcher.watchCache[0].propertyPath).to.equal("blah.test.woop");
-        expect(modelWatcher.watchCache[0].previousValue).to.equal(20);
+        expect(modelWatcher["watchCache"].length).to.equal(1);
+        expect(modelWatcher["watchCache"][0].propertyPath).to.equal("blah.test.woop");
+        expect(modelWatcher["watchCache"][0].previousValue).to.equal(20);
         modelWatcher.stopWatching();
     });
 

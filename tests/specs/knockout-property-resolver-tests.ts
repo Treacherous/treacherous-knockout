@@ -1,5 +1,6 @@
-var assert = chai.assert;
-var expect = chai.expect;
+import {use, expect, assert, spy} from "chai";
+import {createRuleset, KnockoutModelWatcher, KnockoutPropertyResolver} from "../../src/index";
+import * as spies from "chai-spies";
 
 describe('Knockout Property Resolver', function () {
 
@@ -12,7 +13,7 @@ describe('Knockout Property Resolver', function () {
             }
         };
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var valuePropertyChain = "somethingElse.somethingMore.value";
         var valueProperty = propertyChainProcessor.resolveProperty(someObject, valuePropertyChain);
@@ -30,7 +31,7 @@ describe('Knockout Property Resolver', function () {
             ]
         };
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var valuePropertyChain = "someArray[0].someObject.value";
         var valueProperty = propertyChainProcessor.resolveProperty(someObject, valuePropertyChain);
@@ -42,7 +43,7 @@ describe('Knockout Property Resolver', function () {
             { someObject: { value: 1 } }
         ];
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var valuePropertyChain = "[0].someObject.value";
         var valueProperty = propertyChainProcessor.resolveProperty(someObject, valuePropertyChain);
@@ -54,7 +55,7 @@ describe('Knockout Property Resolver', function () {
             { someObject: { someArray: [ 10, 20 ] } }
         ];
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var valuePropertyChain = "[0].someObject.someArray[1]";
         var valueProperty = propertyChainProcessor.resolveProperty(someObject, valuePropertyChain);
@@ -70,7 +71,7 @@ describe('Knockout Property Resolver', function () {
             ]
         };
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var valuePropertyChain = "someArray[0].someObject[0].value";
         var valueProperty = propertyChainProcessor.resolveProperty(someObject, valuePropertyChain);
@@ -87,7 +88,7 @@ describe('Knockout Property Resolver', function () {
             "moo"
         ];
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var actualPropertyRoute = propertyChainProcessor.buildPropertyRoute(somePropertyRoute);
         expect(actualPropertyRoute).equals(expectedPropertyRoute);
@@ -102,7 +103,7 @@ describe('Knockout Property Resolver', function () {
         ];
         var somePropertyRoute = "foo.bar[0].moo";
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var actualPropertyRoute = propertyChainProcessor.decomposePropertyRoute(somePropertyRoute);
         expect(actualPropertyRoute).eql(expectedPropertyRoute);
@@ -111,7 +112,7 @@ describe('Knockout Property Resolver', function () {
     it('should get section of a property route', function () {
         var somePropertyRoute = "foo.bar[0].moo";
 
-        var propertyChainProcessor = new Treacherous.KnockoutPropertyResolver();
+        var propertyChainProcessor = new KnockoutPropertyResolver();
 
         var section0 = propertyChainProcessor.getPropertyRouteSection(somePropertyRoute);
         var section1 = propertyChainProcessor.getPropertyRouteSection(somePropertyRoute, 1);
