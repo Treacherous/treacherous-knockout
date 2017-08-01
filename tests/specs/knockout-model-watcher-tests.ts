@@ -1,6 +1,7 @@
 import {use, expect, assert, spy} from "chai";
 import {createRuleset, KnockoutModelWatcher} from "../../src/index";
 import * as spies from "chai-spies";
+use(spies);
 
 describe('Knockout Model Watcher', function () {
 
@@ -23,7 +24,7 @@ describe('Knockout Model Watcher', function () {
 
         var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -60,7 +61,7 @@ describe('Knockout Model Watcher', function () {
 
         var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){});
+        var spySubscription = spy(function(eventArgs){});
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
@@ -89,7 +90,7 @@ describe('Knockout Model Watcher', function () {
 
         var modelWatcher = new KnockoutModelWatcher();
         modelWatcher.setupWatcher(dummyModel, ruleset, 50);
-        var spySubscription = chai.spy(function(eventArgs){ console.log("event", eventArgs); });
+        var spySubscription = spy(function(eventArgs){ console.log("event", eventArgs); });
 
         modelWatcher.onPropertyChanged.subscribe(spySubscription);
 
