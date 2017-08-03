@@ -23,24 +23,41 @@
     </style>
 </head>
 <body>
-    <h2>Validate with nested objects and iterated elements</h2>
-    <section data-bind="validate-with: validationGroup, template: 'validation-content-template'">
-    </section>
+    <div id="default-examples">
+        <h2>Validate with nested objects and iterated elements</h2>
+        <section data-bind="validate-with: validationGroup, template: 'validation-content-template'">
+        </section>
 
-    <h2>Force validation errors to display on load</h2>
-    <section data-bind="validate-with: validationGroup, template: 'validation-content-template'" view-options="immediateErrors: true">
-    </section>
+        <h2>Force validation errors to display on load</h2>
+        <section data-bind="validate-with: validationGroup, template: 'validation-content-template'" view-options="immediateErrors: true">
+        </section>
 
-    <h2>Show a validation summary</h2>
-    <section data-bind="validate-with: validationGroup">
-        <div data-bind="validation-summary"></div>
-    </section>
+        <h2>Show a validation summary</h2>
+        <section data-bind="validate-with: validationGroup">
+            <div data-bind="validation-summary"></div>
+        </section>
 
-    <h2>Hint validation properties</h2>
-    <section data-bind="validate-with: validationGroup" view-options="immediateErrors: true">
-        <label>Some Explicit Validation Error For someNestedObject.someNumber</label>
-        <div data-bind="show-error" validate-property="someNestedObject.someNumber"></div>
-    </section>
+        <h2>Hint validation properties</h2>
+        <section data-bind="validate-with: validationGroup" view-options="immediateErrors: true">
+            <label>Some Explicit Validation Error For someNestedObject.someNumber</label>
+            <div data-bind="show-error" validate-property="someNestedObject.someNumber"></div>
+        </section>
+    </div>
+
+    <div id="quirky-examples">
+        <h2>Partial validation</h2>
+        <section data-bind="validate-with: partialValidationGroup" view-options="immediateErrors: true">
+            <div>
+                <label>Should Be Validated</label>
+                <input data-bind="value: someValidatedProperty"/>
+            </div>
+            <div>
+                <label>Should Be Ignored</label>
+                <input data-bind="value: nonValidatedProperty"/>
+            </div>
+            <div data-bind="validation-summary"></div>
+        </section>
+    </div>
 
     <script id="validation-content-template" type="text/html">
         <div>
@@ -68,7 +85,7 @@
     <script type="text/javascript" src="libs/knockout.js"></script>
     <script type="text/javascript" src="../dist/treacherous-knockout.browser.js"></script>
 
-    <script type="text/javascript">
+    <script id="simple-examples-code" type="text/javascript">
         var someKoModel = {
             someNumber: ko.observable(10),
             someText: ko.observable("hello"),
@@ -101,7 +118,28 @@
 
         var validationGroup = Treacherous.createGroup().build(someKoModel, ruleset);
 
-        ko.applyBindings(someKoModel);
+        var defaultExamplesElement = document.getElementById("default-examples");
+        ko.applyBindings(someKoModel, defaultExamplesElement);
+    </script>
+
+    <script id="quirky-examples-code" type="text/javascript">
+        
+        var partiallyValidatedKoModel = {
+            someValidatedProperty: ko.observable(25),
+            nonValidatedProperty: ko.observable(100)
+        };
+
+        var partialRuleset = Treacherous.createRuleset()
+                .forProperty("someValidatedProperty")
+                    .addRule("required")
+                    .addRule("maxValue", 10)
+                .build();
+        
+        var partialValidationGroup = Treacherous.createGroup().build(partiallyValidatedKoModel, partialRuleset);
+
+        var quirkyExamplesElement = document.getElementById("quirky-examples");
+        ko.applyBindings(partiallyValidatedKoModel, quirkyExamplesElement);
+
     </script>
 </body>
 </html>
