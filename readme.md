@@ -1,13 +1,13 @@
 # Treacherous-Knockout
 
-<img src="https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png"/> <img src="https://user-images.githubusercontent.com/927201/29810332-5be8d7cc-8c97-11e7-81ca-9476c22232ec.png"/> 
+<img src="https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png"/> <img src="https://user-images.githubusercontent.com/927201/29812570-f4437a8e-8c9e-11e7-9f24-b9100603bcc2.png"/> 
 
 
 [![Join the chat at https://gitter.im/grofit/treacherous](https://badges.gitter.im/grofit/treacherous.svg)](https://gitter.im/grofit/treacherous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Treacherous plugin for knockout which allows treacherous validation to hook into the view.
 
-(See more about Treacherous [HERE]
+(See more about Treacherous [HERE](https://github.com/grofit/treacherous))
 
 [HERE IS AN EXAMPLE/DEMO OF IT IN ACTION](https://rawgithub.com/grofit/treacherous-knockout/master/example/index.html)
 
@@ -152,3 +152,9 @@ ones.
 If you want to add to the development clone and do the normal `npm install` and `gulp` then if you want to 
 run tests do `gulp run-tests` which will run all the built in tests, there are no acceptance tests to date
 so you will need to manually run the example and confirm it exists, may add some cucumber tests at a later date.
+
+## Credits
+
+"Mountains" Icon courtesy of [The Noun Project](https://thenounproject.com/), by Aleksandr Vector, under [CC 3.0](http://creativecommons.org/licenses/by/3.0/us/)
+
+"Knockout" Icon courtesy of [knockout.js](http://knockoutjs.com/) project
