@@ -1,10 +1,15 @@
 # Treacherous-Knockout
 
+<img src="https://user-images.githubusercontent.com/927201/29661471-03b5ee16-88bc-11e7-880d-d8c027b264c8.png"/> <img src="https://user-images.githubusercontent.com/927201/29810332-5be8d7cc-8c97-11e7-81ca-9476c22232ec.png"/> 
+
+
 [![Join the chat at https://gitter.im/grofit/treacherous](https://badges.gitter.im/grofit/treacherous.svg)](https://gitter.im/grofit/treacherous?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Treacherous plugin for knockout which allows treacherous validation to hook into the view.
 
-(See more about Treacherous [HERE](https://github.com/grofit/treacherous))
+(See more about Treacherous [HERE]
+
+[HERE IS AN EXAMPLE/DEMO OF IT IN ACTION](https://rawgithub.com/grofit/treacherous-knockout/master/example/index.html)
 
 ## Installing
 
@@ -34,9 +39,6 @@ requires you to include all dependencies as scripts, much like shown in the exam
 
 In the browser it will self register and append to the `Treacherous` global, however in node or module aware
 environments its up to you how you include it, but it will expose the same object for you.
-
-Here is an example of what it does and how to use it.
-[View Example](https://rawgithub.com/grofit/treacherous-knockout/master/example/index.html)
 
 ## Available Bindings
 

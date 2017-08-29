@@ -3,79 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Treacherous Knockout Example</title>
-    <link href="default-theme.css" type="text/css" rel="stylesheet"/>
-    <style type="text/css">
-        label
-        {
-            display: inline-block;
-            width: 10em;
-        }
-
-        input
-        {
-            padding: 0.25em;
-        }
-
-        section>div
-        {
-            margin: 0.25em;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+    <link rel="stylesheet" type="text/css" href="validation-styles.css" />
+    <link rel="stylesheet" type="text/css" href="default-theme.css"/>
 </head>
 <body>
-    <div id="default-examples">
-        <h2>Validate with nested objects and iterated elements</h2>
-        <section data-bind="validate-with: validationGroup, template: 'validation-content-template'">
-        </section>
+    <div class="container">
+        <div id="default-examples">
+            <h1>Treacherous - Knockout Examples</h1>
+            <p>Here are some common use cases and examples on how to use treacherous and knockout together</p>
+            <p>View the source if you want to see more into how it all works.</p>
 
-        <h2>Force validation errors to display on load</h2>
-        <section data-bind="validate-with: validationGroup, template: 'validation-content-template'" view-options="immediateErrors: true">
-        </section>
+            <fieldset>
+                <h3>Validate with nested objects and iterated elements</h3>
+                <section data-bind="validate-with: validationGroup, template: 'validation-content-template'">
+                </section>
+            </fieldset>
 
-        <h2>Show a validation summary</h2>
-        <section data-bind="validate-with: validationGroup">
-            <div data-bind="validation-summary"></div>
-        </section>
+            <fieldset>
+                <h3>Force validation errors to display on load</h3>
+                <section data-bind="validate-with: validationGroup, template: 'validation-content-template'" view-options="immediateErrors: true">
+                </section>
+            </fieldset>
 
-        <h2>Hint validation properties</h2>
-        <section data-bind="validate-with: validationGroup" view-options="immediateErrors: true">
-            <label>Some Explicit Validation Error For someNestedObject.someNumber</label>
-            <div data-bind="show-error" validate-property="someNestedObject.someNumber"></div>
-        </section>
-    </div>
+            <fieldset>
+                <h3>Show a validation summary</h3>
+                <section data-bind="validate-with: validationGroup">
+                    <div data-bind="validation-summary"></div>
+                </section>
+            </fieldset>
 
-    <div id="quirky-examples">
-        <h2>Partial validation</h2>
-        <section data-bind="validate-with: partialValidationGroup" view-options="immediateErrors: true">
-            <div>
-                <label>Should Be Validated</label>
-                <input data-bind="value: someValidatedProperty"/>
-            </div>
-            <div>
-                <label>Should Be Ignored</label>
-                <input data-bind="value: nonValidatedProperty"/>
-            </div>
-            <div data-bind="validation-summary"></div>
-        </section>
+            <fieldset>
+                <h3>Hint validation properties</h3>
+                <section data-bind="validate-with: validationGroup" view-options="immediateErrors: true">
+                    <label>Some Explicit Validation Error For someNestedObject.someNumber</label>
+                    <div data-bind="show-error" validate-property="someNestedObject.someNumber"></div>
+                </section>
+            </fieldset>
+        </div>
+        <div id="quirky-examples">
+            <fieldset>
+                <h3>Partial validation</h3>
+                <section data-bind="validate-with: partialValidationGroup" view-options="immediateErrors: true">
+                    <div>
+                        <label>Should Be Validated</label>
+                        <input type="text" class="u-full-width" data-bind="value: someValidatedProperty"/>
+                    </div>
+                    <div>
+                        <label>Should Be Ignored</label>
+                        <input type="text" class="u-full-width" data-bind="value: nonValidatedProperty"/>
+                    </div>
+                    <div data-bind="validation-summary"></div>
+                </section>
+            </fieldset>
+        </div>
     </div>
 
     <script id="validation-content-template" type="text/html">
-        <div>
-            <label>Some Number</label>
-            <input data-bind="value: someNumber"/>
-        </div>
-        <div>
-            <label>Some Text</label>
-            <input data-bind="value: someText"/>
-        </div>
-        <div>
-            <label>Some Nested Number</label>
-            <input data-bind="value: someNestedObject.someNumber"/>
+        <div class="row">
+            <div class="four columns">
+                <label>Some Number</label>
+                <input type="text" class="u-full-width" data-bind="value: someNumber" placeholder="Some Number Here"/>
+            </div>
+            <div class="four columns">
+                <label>Some Text</label>
+                <input type="text" class="u-full-width" data-bind="value: someText" placeholder="Some Text Here"/>
+            </div>
+            <div class="four columns">
+                <label>Some Nested Number</label>
+                <input type="text" class="u-full-width" data-bind="value: someNestedObject.someNumber" placeholder="Some Number Here"/>
+            </div>
         </div>
         <!-- ko foreach: someArray -->
         <div>
             <label data-bind="text: 'Some Array - Index '+ ($index() + 1)"></label>
-            <input data-bind="textInput: $rawData"/>
+            <input type="text" class="u-full-width" data-bind="textInput: $rawData" placeholder="Some Text Here"/>
         </div>
         <!-- /ko -->
         <button data-bind="enabled-with: validationGroup">Enabled based upon validation state</button>

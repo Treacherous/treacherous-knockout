@@ -1,20 +1,28 @@
-input.valid {
-    border: 1px solid green;
-    background-color: rgba(0,255,0,0.1);
+/* Generic Example Style */
+body
+{
+    background-color: #eeeef0;
 }
 
-input.invalid {
-    border: 1px solid red;
-    background-color: rgba(255,0,0,0.1);
-}
-
-.validation-error-container {
-    color: red;
-    padding: 0.5em;
-}
-
-.validation-summary-container {
-    color: red;
-    border: 1px solid red;
+fieldset {
+    background: white;
     padding: 1em;
+    border-bottom: 3px solid rgba(0,0,0,0.2);
+    border-radius: 0.25em;
 }
+/*
+label
+{
+    display: inline-block;
+    width: 10em;
+}
+
+input
+{
+    padding: 0.25em;
+}
+
+section>div
+{
+    margin: 0.25em;
+}*/
