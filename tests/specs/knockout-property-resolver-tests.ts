@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {use, expect, assert, spy} from "chai";
 import {createRuleset, KnockoutModelWatcher, KnockoutPropertyResolver} from "../../src/index";
 import * as spies from "chai-spies";

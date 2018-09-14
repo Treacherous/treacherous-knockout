@@ -1,4 +1,4 @@
-import {PropertyStateChangedEvent, IReactiveValidationGroup} from "treacherous";
+import {PropertyStateChangedEvent, IReactiveValidationGroup} from "@treacherous/core";
 
 export class BindingHelper
 {

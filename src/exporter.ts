@@ -1,8 +1,8 @@
 import * as ko from "knockout";
-export * from "treacherous";
-export * from "treacherous-view";
+export * from "@treacherous/core";
+export * from "@treacherous/view";
 
-import {createGroup as createTreacherousGroup, ModelResolverFactory, ValidationGroupBuilder, ReactiveValidationGroupBuilder} from "treacherous";
+import {createGroup as createTreacherousGroup, ModelResolverFactory, ValidationGroupBuilder, ReactiveValidationGroupBuilder} from "@treacherous/core";
 
 import {KnockoutPropertyResolver} from "./model-watcher/knockout-property-resolver";
 import {KnockoutModelWatcherFactory} from "./model-watcher/knockout-model-watcher-factory";

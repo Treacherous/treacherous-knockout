@@ -1,4 +1,4 @@
-import { IReactiveValidationGroup } from "treacherous";
+import { IReactiveValidationGroup } from "@treacherous/core";
 export declare class BindingHelper {
     static validationPropertyBindingName: string;
     static validationPropertyPathBindingName: string;

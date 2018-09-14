@@ -1,4 +1,4 @@
-import { IModelWatcher, Ruleset } from "treacherous";
+import { IModelWatcher, Ruleset } from "@treacherous/core";
 import { EventHandler } from "event-js";
 export declare class KnockoutModelWatcher implements IModelWatcher {
     private propertyResolver;
