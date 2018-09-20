@@ -1,4 +1,4 @@
-import {IModelWatcher, PropertyWatcher, Ruleset, PropertyChangedEvent, TypeHelper} from "treacherous";
+import {IModelWatcher, PropertyWatcher, Ruleset, PropertyChangedEvent, TypeHelper} from "@treacherous/core";
 import {PropertyResolver} from "property-resolver";
 import {EventHandler} from "event-js";
 import * as ko from "knockout";

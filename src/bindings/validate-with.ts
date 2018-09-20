@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import {BindingHelper} from "../helpers/binding-helper";
-import {ElementHelper} from "treacherous-view";
+import {ElementHelper} from "@treacherous/view";
 
 
 ko.bindingHandlers["validate-with"] = {

@@ -1,4 +1,4 @@
-import {IModelWatcherFactory, IModelWatcher} from "treacherous";
+import {IModelWatcherFactory, IModelWatcher} from "@treacherous/core";
 import {KnockoutModelWatcher} from "./knockout-model-watcher";
 import {KnockoutPropertyResolver} from "./knockout-property-resolver";
 

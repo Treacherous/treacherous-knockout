@@ -1,6 +1,6 @@
 import {BindingHelper} from "../helpers/binding-helper";
-import {viewStrategyRegistry, ElementHelper, ValidationState} from "treacherous-view";
-import {PropertyStateChangedEvent} from "treacherous";
+import {viewStrategyRegistry, ElementHelper, ValidationState} from "@treacherous/view";
+import {PropertyStateChangedEvent} from "@treacherous/core";
 
 export class ValidationHandler
 {

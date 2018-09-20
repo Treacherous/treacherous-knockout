@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import {IReactiveValidationGroup, IValidationGroup, PropertyStateChangedEvent} from "treacherous";
-import {ViewSummary, IViewOptions} from "treacherous-view";
+import {IReactiveValidationGroup, IValidationGroup, PropertyStateChangedEvent} from "@treacherous/core";
+import {ViewSummary, IViewOptions} from "@treacherous/view";
 import {BindingHelper} from "../helpers/binding-helper";
 
 var viewSummary = new ViewSummary();

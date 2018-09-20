@@ -1,4 +1,4 @@
-import { IPropertyResolver } from "treacherous";
+import { IPropertyResolver } from "@treacherous/core";
 export declare class KnockoutPropertyResolver implements IPropertyResolver {
     private indexRegex;
     private splitRegex;

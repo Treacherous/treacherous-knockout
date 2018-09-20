@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import {IValidationGroup} from "treacherous";
+import {IValidationGroup} from "@treacherous/core";
 
 ko.bindingHandlers["enabled-with"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {

@@ -1,3 +1,4 @@
+import {describe, it} from "mocha";
 import {use, expect, assert, spy} from "chai";
 import {
     createRuleset, ruleRegistry, RuleResolver, KnockoutPropertyResolver,
@@ -5,7 +6,6 @@ import {
     ReactiveValidationGroup
 } from "../../src/index";
 import * as spies from "chai-spies";
-
 
 describe('Validation Group', function () {
 

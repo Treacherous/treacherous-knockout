@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import {IPropertyResolver} from "treacherous";
+import {IPropertyResolver} from "@treacherous/core";
 
 export class KnockoutPropertyResolver implements IPropertyResolver
 {
