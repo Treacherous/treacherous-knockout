@@ -9,13 +9,13 @@ Treacherous plugin for knockout which allows treacherous validation to hook into
 
 (See more about Treacherous [HERE](https://github.com/grofit/treacherous))
 
-[HERE IS AN EXAMPLE/DEMO OF IT IN ACTION](https://rawgithub.com/grofit/treacherous-knockout/master/example/index.html)
+[HERE IS AN EXAMPLE/DEMO OF IT IN ACTION](https://rawgithub.com/treacherous/treacherous-knockout/master/example/index.html)
 
 ## Installing
 
 ### Via NPM
 
-Just do an `npm install treacherous-knockout`
+Just do an `npm install @treacherous/knockout`
 
 ### In browser
 

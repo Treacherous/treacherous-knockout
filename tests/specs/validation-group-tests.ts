@@ -3,21 +3,38 @@ import {use, expect, assert, spy} from "chai";
 import {
     createRuleset, ruleRegistry, RuleResolver, KnockoutPropertyResolver,
     FieldErrorProcessor, KnockoutModelWatcherFactory, ModelResolverFactory,
-    ReactiveValidationGroup
+    ReactiveValidationGroup, IModelResolver, DefaultLocaleHandler, locale as defaultLocale
 } from "../../src/index";
+
 import * as spies from "chai-spies";
 
 describe('Validation Group', function () {
 
     var createValidationGroupFor = function(model, ruleset) {
-        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry);
+        const defaultLocaleHandler = new DefaultLocaleHandler();
+        defaultLocaleHandler.registerLocale("en-us", defaultLocale);
+        defaultLocaleHandler.useLocale("en-us");
+
+        var fieldErrorProcessor = new FieldErrorProcessor(ruleRegistry, defaultLocaleHandler);
         var propertyResolver = new KnockoutPropertyResolver();
         var ruleResolver = new RuleResolver();
         var modelWatcherFactory = new KnockoutModelWatcherFactory(propertyResolver);
         var modelResolverFactory = new ModelResolverFactory(propertyResolver);
 
-        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, model, ruleset, 50);
-    }
+        return new ReactiveValidationGroup(fieldErrorProcessor, ruleResolver, modelResolverFactory, modelWatcherFactory, defaultLocaleHandler, model, ruleset, 50);
+    };
+
+    const delayedRequiresValid: any = (retval:any = true, delay:number = 100) => {
+        return {
+            ruleName: "delayed",
+            validate: function(modelResolver: IModelResolver, propertyName: string, options: any){
+                return new Promise(function(resolve, reject){
+                    console.log("validating", modelResolver.resolve(propertyName));
+                    setTimeout(function() { resolve(modelResolver.resolve(propertyName) == "valid"); }, delay);
+                });
+            }
+        };
+    };
 
     it('should correctly get errors', function (done) {
 
@@ -391,14 +408,13 @@ describe('Validation Group', function () {
     it('should only return errors when all validation events have finished', function (done) {
 
         // This basically delays validation so others stack
-        var delayedRequiresValid = {
+        var delayedRequiresValid: any = {
             ruleName: "delayed",
-            validate: function(value, options){
-                return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(value == "valid"); }, 200);
+            validate: function(modelResolver: IModelResolver, prop: string, options: any){
+                return new Promise(function(resolve, reject) {
+                    setTimeout(function() { resolve(modelResolver.resolve(prop) == "valid"); }, 200);
                 });
-            },
-            getMessage: function(value, options) { return "delayed rule: " + value; }
+            }
         };
 
         ruleRegistry.registerRule(delayedRequiresValid);
@@ -426,16 +442,6 @@ describe('Validation Group', function () {
 
     it('should only return valid state when all validation events have finished', function (done) {
 
-        var delayedRequiresValid = {
-            ruleName: "delayed",
-            validate: function(value, options){
-                return new Promise(function(resolve, reject){
-                    setTimeout(function() { resolve(value == "valid"); }, 100);
-                });
-            },
-            getMessage: function(value, options) { return "delayed rule: " + value; }
-        };
-
         ruleRegistry.registerRule(delayedRequiresValid);
 
         var ruleset = createRuleset()
@@ -462,14 +468,13 @@ describe('Validation Group', function () {
 
     it('should correctly delay error requests until validation has finished', function (done) {
 
-            var delayedRequires10Rule = {
+            const delayedRequires10Rule: any = {
                 ruleName: "delayed",
-                validate: function(value, options){
+                validate: function(mr: any, prop: any, options: any){
                     return new Promise(function(resolve, reject){
-                        setTimeout(function() { resolve(value == 10); }, 100);
+                        setTimeout(function() { resolve(mr.resolve(prop) == 10); }, 100);
                     });
-                },
-                getMessage: function(value, options) { return "delayed rule: " + value; }
+                }
             };
 
             ruleRegistry.registerRule(delayedRequires10Rule);

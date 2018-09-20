@@ -1,9 +1,9 @@
 import * as ko from "knockout";
 import {IReactiveValidationGroup, IValidationGroup, PropertyStateChangedEvent} from "@treacherous/core";
-import {ViewSummary, IViewOptions} from "@treacherous/view";
+import {DefaultViewSummary, IViewOptions} from "@treacherous/view";
 import {BindingHelper} from "../helpers/binding-helper";
 
-var viewSummary = new ViewSummary();
+var viewSummary = new DefaultViewSummary();
 ko.bindingHandlers["validation-summary"] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var validationGroupOrGroups = valueAccessor();

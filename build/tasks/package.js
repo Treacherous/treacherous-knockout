@@ -1,11 +1,11 @@
 var paths = require('../paths');
 var gulp = require("gulp");
 var webpack = require("webpack-stream");
+var sequence = require("run-sequence");
 
-gulp.task('package:browser', ["compile"], function () {
+gulp.task('package:browser', function () {
     var webpackConfig = {
         output: {
-            entry: "index.js",
             filename: "treacherous-knockout.browser.js",
             library: "Treacherous",
             libraryTarget: "umd"
@@ -22,10 +22,9 @@ gulp.task('package:browser', ["compile"], function () {
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('package:minimal', ["compile"], function () {
+gulp.task('package:minimal', function () {
     var webpackConfig = {
         output: {
-            entry: "index.js",
             filename: "treacherous-knockout.js",
             library: "Treacherous",
             libraryTarget: "umd"
@@ -46,10 +45,9 @@ gulp.task('package:minimal', ["compile"], function () {
 });
 
 
-gulp.task('package:all', ["compile"], function () {
+gulp.task('package:all', function () {
     var webpackConfig = {
         output: {
-            entry: "index.js",
             filename: "treacherous-knockout.testable.js",
             library: "Treacherous",
             libraryTarget: "umd"
@@ -61,4 +59,9 @@ gulp.task('package:all', ["compile"], function () {
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('package', ["package:minimal", "package:browser", "package:all"]);
+gulp.task('package', ["compile"], function(callback){
+    sequence("package:minimal",
+        "package:browser",
+        "package:all",
+        callback);
+});

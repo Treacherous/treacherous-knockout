@@ -1,6 +1,6 @@
 {
-  "name": "treacherous-knockout",
-  "version": "0.5.2",
+  "name": "@treacherous/knockout",
+  "version": "0.5.3",
   "dependencies": {
     "@treacherous/core": "^0.17.6",
     "@treacherous/view": "^0.4.2",
@@ -9,7 +9,7 @@
     "event-js": "^0.1.3"
   },
   "bugs": {
-    "url": "https://github.com/grofit/treacherous-knockout/issues"
+    "url": "https://github.com/treacherous/treacherous-knockout/issues"
   },
   "main": "dist/treacherous-knockout.js",
   "typings": "dist/definitions/index.d.ts",
@@ -20,10 +20,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/grofit/treacherous-knockout"
+    "url": "https://github.com/treacherous/treacherous-knockout"
   },
   "scripts": {
-    "build": "gulp compile",
+    "build": "gulp",
     "test": "mocha -r ts-node/register tests/specs/**/*.ts"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "gulp-es6-exporter": "^0.0.5",
     "gulp-uglify": "^3.0.1",
     "gulp-rename": "^1.4.0",
+    "run-sequence": "^2.2.1",
     "webpack-stream": "^5.1.1",
     "gulp-bump": "^3.1.1",
     "rimraf": "^2.6.2",

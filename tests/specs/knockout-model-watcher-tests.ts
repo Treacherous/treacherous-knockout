@@ -33,8 +33,8 @@ describe('Knockout Model Watcher', function () {
         dummyModel.bar[2] = 10;
 
         setTimeout(function(){
-            // once for foo, once for bar, once for bar[2]
-            expect(spySubscription).to.have.been.called.three;
+            // once for foo, once for bar[2]
+            expect(spySubscription).to.have.been.called.exactly(2);
             modelWatcher.stopWatching();
             done();
         }, 250);

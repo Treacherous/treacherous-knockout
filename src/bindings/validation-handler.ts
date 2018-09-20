@@ -10,7 +10,7 @@ export class ValidationHandler
         var validationState = ValidationState.unknown;
         bindingContext[BindingHelper.validationPropertyPathBindingName] = propertyPath;
 
-        var strategy = ElementHelper.getStrategyFrom(element) || BindingHelper.getViewStrategy(bindingContext);
+        var strategy = ElementHelper.getViewStrategyFrom(element) || BindingHelper.getViewStrategy(bindingContext);
         var propertyPathOverride = ElementHelper.getPropertyRouteFrom(element);
 
         if(!validationGroup || strategy == "none")
